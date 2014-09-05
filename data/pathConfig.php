@@ -20,4 +20,5 @@
 	// REQUIRE NEEDED FILES BELOW.
 	require_once('config.php');
 	require_once('Database.php');
+	require_once('../public_html/src/controller/LoginController.php');
 
