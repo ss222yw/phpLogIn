@@ -1,2 +1,4 @@
 <?php
-	echo 'hello world!';
+	require_once("../../common/pathConfig.php");
+
+	$database = new Database();

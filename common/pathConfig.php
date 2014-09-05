@@ -10,7 +10,7 @@
 		define('ProjectRootPath', 'Applications'.DS.'MAMP'.DS.'htdocs'.DS.'www'.DS.'git'.DS.'phpLogIn');
 
 	// Define helper path.
-	defined('HelperPath') ? null : define('HelpersPath', ProjectRootPath.DS.'common');
+	defined('HelperPath') ? null : define('HelperPath', ProjectRootPath.DS.'common');
 
 	// Define MVC path.
 	defined('ModelPath') ? null : define('ModelPath', ProjectRootPath.DS.'login/src/model');
@@ -18,6 +18,6 @@
 	defined('ControllerPath') ? null : define('ControllerPath', ProjectRootPath.DS.'login/src/controller');
 
 	// REQUIRE NEEDED FILES BELOW.
-
-	
+	require_once('config.php');
+	require_once('Database.php');
 
