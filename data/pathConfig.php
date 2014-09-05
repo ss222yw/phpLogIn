@@ -6,8 +6,7 @@
 	defined('DS') ? null : define('DS', DIRECTORY_SEPARATOR);
 
 	// Define a project root path.
-	defined('ProjectRootPath') ? null :
-		define('ProjectRootPath', 'Applications'.DS.'MAMP'.DS.'htdocs'.DS.'www'.DS.'git'.DS.'phpLogIn');
+	defined('ProjectRootPath') ? null : define('ProjectRootPath', DS.'Applications'.DS.'MAMP'.DS.'htdocs'.DS.'www'.DS.'git'.DS.'phpLogIn');
 
 	// Define helper path.
 	defined('HelperPath') ? null : define('HelperPath', ProjectRootPath.DS.'data');
@@ -18,7 +17,7 @@
 	defined('ControllerPath') ? null : define('ControllerPath', ProjectRootPath.DS.'public_html/src/controller');
 
 	// REQUIRE NEEDED FILES BELOW.
-	require_once('config.php');
-	require_once('Database.php');
-	require_once('../public_html/src/controller/LoginController.php');
+	require_once(HelperPath.DS.'config.php');
+	require_once(HelperPath.DS.'Database.php');
+	require_once(ControllerPath.DS.'LoginController.php');
 
