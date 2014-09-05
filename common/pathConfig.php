@@ -10,9 +10,9 @@
 		define('ProjectRootPath', 'Applications'.DS.'MAMP'.DS.'htdocs'.DS.'www'.DS.'git'.DS.'phpLogIn');
 
 	// Define helper path.
-	defined('HelpersPath') ? null : define('HelpersPath', ProjectRootPath.DS.'common');
+	defined('HelperPath') ? null : define('HelpersPath', ProjectRootPath.DS.'common');
 
-	// Define MVC paths.
+	// Define MVC path.
 	defined('ModelPath') ? null : define('ModelPath', ProjectRootPath.DS.'login/src/model');
 	defined('ViewPath') ? null : define('ViewPath', ProjectRootPath.DS.'login/src/view');
 	defined('ControllerPath') ? null : define('ControllerPath', ProjectRootPath.DS.'login/src/controller');
