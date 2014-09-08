@@ -32,12 +32,15 @@
 
 			while ($row = mysql_fetch_assoc($result)) {
 
-				$this->username = $row['username'];
-				$this->password = $row['password'];
+				$userObject = new self;
+				$userObject->id = $row['userId'];
+				$userObject->username = $row['username'];
+				$userObject->password = $row['password'];
+				$userObject->firstname = $row['firstname'];
+				$userObject->surname = $row['surname'];
 			}
 
-			return $username === $this->username
-				&& $password === $this->password;
+			return !empty($userObject) ? $userObject : false;
 		}
 	}
 

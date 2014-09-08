@@ -30,8 +30,9 @@
 			$username = $this->loginView->GetUsername();
 			$password = $this->loginView->GetPassword();
 
-			if ($this->userModel->AuthenticateUser($username, $password)) {
+			if ($this->userModel->AuthenticateUser($username, $password) !== false) {
 
+				// TODO: Login user with session.
 				echo "Welcome $username!";
 			}
 		}
