@@ -1,4 +1,5 @@
 <?php
+	require_once(HelperPath.DS.'Database.php');
 
 	class UserModel {
 
@@ -10,15 +11,31 @@
 		private $firstname;
 		private $surname;
 
-		public function __construct () {
+		// UNCOMMENTED FAKE AUTHENTICATION DATA
+		// public function __construct () {
 
-			$this->username = "Shari";
-			$this->password = "test";
-		}
+		// 	$this->username = "Shari";
+		// 	$this->password = "test";
+		// }
 
 		public function AuthenticateUser ($username, $password) {
 
-			echo "Checking if $username and $password is correct.";
+			global $database;
+
+			// String Dependency!!
+			$sql = "SELECT * FROM user ";
+			$sql .= "WHERE username = '{$username}' ";
+			$sql .= "AND password = '{$password}'";
+
+			// TODO: Implement $database->AuthenticateUser(); as a SPROC
+			$result = $database->ExecuteSqlQuery($sql);
+
+			while ($row = mysql_fetch_assoc($result)) {
+
+				$this->username = $row['username'];
+				$this->password = $row['password'];
+			}
+
 			return $username === $this->username
 				&& $password === $this->password;
 		}

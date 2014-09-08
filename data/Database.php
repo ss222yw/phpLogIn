@@ -23,6 +23,22 @@
 				echo 'mysql did not connect!';
 			}
 		}
+
+		public function ExecuteSqlQuery ($sql) {
+
+			$result = mysql_query($sql, $this->connection);
+
+			if ($result === false) {
+				// TODO: Create an output function.
+				$output = mysql_error();
+				echo $output;
+				return false;
+
+			} else {
+
+				return $result;
+			}
+		}
 	}
 
 	$database = new Database();
