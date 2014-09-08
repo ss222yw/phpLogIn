@@ -4,14 +4,35 @@
 		// REMINDER: WHEN CREATING MODELS, THE MODEL MIGHT HAVE TO INHERIT FROM THE DATABASE OBJECTS IN THE HELPERS FOLDER?
 
 		private $loginView;
+		private $userModel;
 
 		function __construct () {
 
-			echo 'LoginController is instantiated in a member of this controller class.';
+			// echo 'LoginView is instantiated and stored in a member of this controller class.';
+			$this->loginView = new LoginView();
+			$this->userModel = new UserModel();
 		}
 
-		public function displayLogin () {
+		public function DisplayLogin () {
 
-			return 'Loginform is displayed!';
+			$loginHTML = $this->loginView->ShowLoginForm();
+			return $loginHTML;
+			// var_dump($loginHTML);
+		}
+
+		public function UserLogin () {
+
+			return $this->loginView->UserLogin();
+		}
+
+		public function AuthenticateUser () {
+
+			$username = $this->loginView->GetUsername();
+			$password = $this->loginView->GetPassword();
+
+			if ($this->userModel->AuthenticateUser($username, $password)) {
+
+				echo "Welcome $username!";
+			}
 		}
 	}

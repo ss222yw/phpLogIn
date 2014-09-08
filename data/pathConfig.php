@@ -17,7 +17,20 @@
 	defined('ControllerPath') ? null : define('ControllerPath', ProjectRootPath.DS.'public_html/src/controller');
 
 	// REQUIRE NEEDED FILES BELOW.
+
+	// REQUIRE HELPERS
 	require_once(HelperPath.DS.'config.php');
+
+	// require database model (helper)
 	require_once(HelperPath.DS.'Database.php');
+
+	// REQUIRE MODELS
+	require_once(ModelPath.DS.'UserModel.php');
+
+	// REQUIRE VIEWS
+	require_once(HelperPath.DS.'HTMLView.php');
+	require_once(ViewPath.DS.'LoginView.php');
+
+	// REQUIRE CONTROLLERS
 	require_once(ControllerPath.DS.'LoginController.php');
 
