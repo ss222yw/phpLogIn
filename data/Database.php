@@ -8,19 +8,19 @@
 			
 			$this->connection = mysql_connect(DB_HOST_NAME, DB_USER_NAME, DB_PASSWORD);
 			$selectedDB = mysql_select_db(DB_NAME, $this->connection);
-			var_dump($selectedDB);
+			// var_dump($selectedDB);
 
 			if ($this->connection) {
 				
-				echo 'mysql connected!';
+				// echo 'mysql connected!';
 
 				if (!$selectedDB) {
 					
-					echo 'Could not select database!';
+					// echo 'Could not select database!';
 				}
 			} else {
 
-				echo 'mysql did not connect!';
+				// echo 'mysql did not connect!';
 			}
 		}
 
@@ -31,7 +31,7 @@
 			if ($result === false) {
 				// TODO: Create an output function.
 				$output = mysql_error();
-				echo $output;
+				// echo $output;
 				return false;
 
 			} else {

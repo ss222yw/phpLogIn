@@ -14,7 +14,6 @@
 					<html>
 						<head></head>
 						<body>
-							<h1>html start</h1>
 							$body
 						</body>
 					</html>";

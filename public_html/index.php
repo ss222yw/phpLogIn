@@ -7,11 +7,34 @@
 
 	$loginHTML = $loginController->DisplayLogin();
 
-
-
-	if ($loginController->UserLogin()) {
+	if ($loginController->IsLoggedIn()) {
 		
-		$loginController->AuthenticateUser();
+		echo "Logged In!";
 	}
 
-	echo $mainView->echoHTML($loginHTML);
+
+	if ($loginController->UserPressLoginButton() || $loginController->IsValidSession()) {
+		
+		$memberHTML = $loginController->AuthenticateUser();
+
+		if ($loginController->IsLoggedIn()) {
+			
+			echo $mainView->echoHTML($memberHTML);
+		}
+	} else {
+
+		echo $mainView->echoHTML($loginHTML);		
+	}
+
+	$loginController->UserPresssLogoutButton();
+	// if ($loginController->UserPresssLogoutButton()) {
+		
+	// 	unset($_SESSION['valid']);
+	// }
+
+	// if (!$loginController->IsLoggedIn()) {
+		
+	// 	echo $mainView->echoHTML($loginHTML);
+	// }
+
+	

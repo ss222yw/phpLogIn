@@ -39,9 +39,8 @@
 			}
 		}
 
-		public function UserLogin () {
+		public function UserPressLoginButton () {
 
-			
 			return isset($_POST['submit']);
 		}
 	}

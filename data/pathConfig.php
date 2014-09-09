@@ -23,6 +23,7 @@
 
 	// require database model (helper)
 	require_once(HelperPath.DS.'Database.php');
+	require_once(HelperPath.DS.'SessionModel.php');
 
 	// REQUIRE MODELS
 	require_once(ModelPath.DS.'UserModel.php');
@@ -30,6 +31,7 @@
 	// REQUIRE VIEWS
 	require_once(HelperPath.DS.'HTMLView.php');
 	require_once(ViewPath.DS.'LoginView.php');
+	require_once(ViewPath.DS.'MemberView.php');
 
 	// REQUIRE CONTROLLERS
 	require_once(ControllerPath.DS.'LoginController.php');

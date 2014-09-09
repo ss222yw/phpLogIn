@@ -17,6 +17,10 @@
 		// 	$this->username = "Shari";
 		// 	$this->password = "test";
 		// }
+		public function GetUserId () {
+
+			return $this->userId;
+		}
 
 		public function AuthenticateUser ($username, $password) {
 
@@ -30,6 +34,7 @@
 			// TODO: Implement $database->AuthenticateUser(); as a SPROC
 			$result = $database->ExecuteSqlQuery($sql);
 
+			// MAYBE MOVE THIS CODE TO A COMMON DATABASE CLASS INHERITED BY THIS CLASS.
 			while ($row = mysql_fetch_assoc($result)) {
 
 				$userObject = new self;
