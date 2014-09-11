@@ -13,22 +13,22 @@
 		function __construct () {
 
 			// echo 'LoginView is instantiated and stored in a member of this controller class.';
+			$this->sessionModel = new SessionModel();
 			$this->loginView = new LoginView();
 			$this->memberView = new MemberView();
 			$this->userModel = new UserModel();
-			$this->sessionModel = new SessionModel();
 		}
 
-		public function DisplayLogin () {
+		public function GetLoginFormHTML () {
 
-			$loginHTML = $this->loginView->ShowLoginForm();
+			$loginHTML = $this->loginView->GetLoginFormHTML();
 			return $loginHTML;
 			// var_dump($loginHTML);
 		}
 
-		public function DisplayMemberView() {
+		public function GetMemberStartHTML() {
 
-			$memberHTML = $this->memberView->ShowMemberView();
+			$memberHTML = $this->memberView->GetMemberStartHTML();
 			return $memberHTML;
 		}
 
@@ -42,18 +42,14 @@
 			return $this->loginView->UserPressLoginButton();
 		}
 
-		public function UserPresssLogoutButton () {
+		public function UserPressLogoutButton () {
 
-			// return $this->memberView->UserPressLogoutButton();
-			if ($this->memberView->UserPressLogoutButton()) {
-				
-				$this->sessionModel->LogoutUser();
-			}
+			return $this->memberView->UserPressLogoutButton();
 		}
 
-		public function IsValidSession () {
-
-			return $this->sessionModel->IsValidSession();
+		public function LogoutUser () {
+				
+			$this->sessionModel->LogoutUser();
 		}
 
 		public function AuthenticateUser () {
@@ -61,25 +57,12 @@
 			$username = $this->loginView->GetUsername();
 			$password = $this->loginView->GetPassword();
 
-			if (!$this->IsLoggedIn()) {
+			$userAuthenticated = $this->userModel->AuthenticateUser($username, $password);
+			
+			if ($userAuthenticated || $this->sessionModel->IsLoggedIn()) {
 
-				$user = $this->userModel->AuthenticateUser($username, $password);
-
-				if ($user) {
-					
-					$this->sessionModel->SetValidSession();
-					$this->sessionModel->SetUserId($user);
-					$sessiontest = $this->sessionModel->GetUserId();
-				}
-				
-				if ($user || $this->sessionModel->IsValidSession()) {
-
-					// TODO: Login user with session.
-					$this->sessionModel->LoginUser($user);
-					return $this->DisplayMemberView();
-				}
+				$this->sessionModel->LoginUser($this->userModel);
+				return $userAuthenticated;
 			}
-
-			return "";
 		}
 	}

@@ -7,57 +7,26 @@
 
 		function __construct () {
 
-			session_start();
+			// session_start();
 		}
 
 		public function IsLoggedIn () {
 
-			return $this->isLoggedIn;
+			// return $this->isLoggedIn;
+			return isset($_SESSION['userId']);
 		}
 
-		public function LoginUser ($user) {
+		public function LoginUser (UserModel $user) {
 
-			// $this->userId = $_SESSION["userId"] = $user->GetUserId();
+			$this->userId = $_SESSION["userId"] = $user->GetUserId();
 			$this->isLoggedIn = true;
-		}
-
-		public function SetValidSession () {
-
-			$_SESSION['valid'] = true;
-		}
-
-		public function SetUserId ($user) {
-
-			$_SESSION['userId'] = $user->GetUserId();
-		}
-
-		public function GetUserId () {
-
-			if (isset($_SESSION['userId'])) {
-				
-				return $_SESSION['userId'];
-			}
-			else {
-
-				return false;
-			}
-		}
-
-		public function IsValidSession () {
-
-			if (isset($_SESSION['valid'])) {
-				
-				return $_SESSION['valid'];
-			} else {
-
-				return false;
-			}
 		}
 
 		public function LogoutUser () {
 
-			unset($_SESSION['valid']);
+			unset($_SESSION['userId']);
 			// unset($this->userId);
 			$this->isLoggedIn = false;
+			header('Location: index.php');
 		}
 	}

@@ -22,8 +22,8 @@
 	require_once(HelperPath.DS.'config.php');
 
 	// require database model (helper)
-	require_once(HelperPath.DS.'Database.php');
 	require_once(HelperPath.DS.'SessionModel.php');
+	require_once(HelperPath.DS.'Database.php');
 
 	// REQUIRE MODELS
 	require_once(ModelPath.DS.'UserModel.php');

@@ -1,7 +1,7 @@
 <?php
 	class LoginView {
 
-		public function ShowLoginForm () {
+		public function GetLoginFormHTML () {
 
 			$loginHTML = '<form id="login" enctype="multipart/form-data" method="post">
 				<div class="loginField">

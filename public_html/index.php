@@ -1,40 +1,44 @@
 <?php
+	session_start();
 	require_once("../data/pathConfig.php");
 
+	$loginController = new LoginController();
 	$mainView = new HTMLView();
 
-	$loginController = new LoginController();
+	$loginHTML = $loginController->GetLoginFormHTML();
+	$memberHTML = $loginController->GetMemberStartHTML();
+	$userAuthenticated = false;
 
-	$loginHTML = $loginController->DisplayLogin();
-
-	if ($loginController->IsLoggedIn()) {
+	// Logout with redirect before headers are sent.
+	if ($loginController->UserPressLogoutButton()) {
 		
-		echo "Logged In!";
+		$loginController->LogoutUser();
 	}
 
-
-	if ($loginController->UserPressLoginButton() || $loginController->IsValidSession()) {
+	if ($loginController->UserPressLoginButton() || $loginController->IsLoggedIn()) {
 		
-		$memberHTML = $loginController->AuthenticateUser();
-
-		if ($loginController->IsLoggedIn()) {
+		if (!$loginController->IsLoggedIn()) {
 			
+			$userAuthenticated = $loginController->AuthenticateUser();
+
+			// If comparison to database succeeded
+			if ($userAuthenticated) {
+				
+				echo $mainView->echoHTML($memberHTML);
+			}
+			else {
+
+				var_dump("Error!");
+			}
+		}
+		else {
+			// var_dump('already logged in');
 			echo $mainView->echoHTML($memberHTML);
 		}
-	} else {
-
-		echo $mainView->echoHTML($loginHTML);		
 	}
+	else {
 
-	$loginController->UserPresssLogoutButton();
-	// if ($loginController->UserPresssLogoutButton()) {
-		
-	// 	unset($_SESSION['valid']);
-	// }
-
-	// if (!$loginController->IsLoggedIn()) {
-		
-	// 	echo $mainView->echoHTML($loginHTML);
-	// }
+		echo $mainView->echoHTML($loginHTML);
+	}
 
 	

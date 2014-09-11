@@ -35,17 +35,23 @@
 			$result = $database->ExecuteSqlQuery($sql);
 
 			// MAYBE MOVE THIS CODE TO A COMMON DATABASE CLASS INHERITED BY THIS CLASS.
-			while ($row = mysql_fetch_assoc($result)) {
+			if (mysql_num_rows($result) === 1) {
+				
+				while ($row = mysql_fetch_assoc($result)) {
 
-				$userObject = new self;
-				$userObject->id = $row['userId'];
-				$userObject->username = $row['username'];
-				$userObject->password = $row['password'];
-				$userObject->firstname = $row['firstname'];
-				$userObject->surname = $row['surname'];
+					// $userObject = new self;
+					$this->userId = $row['userId'];
+					$this->username = $row['username'];
+					$this->password = $row['password'];
+					$this->firstname = $row['firstname'];
+					$this->surname = $row['surname'];
+				}
+				return true;
 			}
+			else {
 
-			return !empty($userObject) ? $userObject : false;
+				return false;
+			}
 		}
 	}
 
