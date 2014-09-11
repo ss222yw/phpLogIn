@@ -26,13 +26,7 @@
 
 			global $database;
 
-			// String Dependency!!
-			$sql = "SELECT * FROM user ";
-			$sql .= "WHERE username = '{$username}' ";
-			$sql .= "AND password = '{$password}'";
-
-			// TODO: Implement $database->AuthenticateUser(); as a SPROC
-			$result = $database->ExecuteSqlQuery($sql);
+			$result = mysql_query("CALL AuthenticateUser('{$username}', '{$password}')");
 
 			// MAYBE MOVE THIS CODE TO A COMMON DATABASE CLASS INHERITED BY THIS CLASS.
 			if (mysql_num_rows($result) === 1) {
