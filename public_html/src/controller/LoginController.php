@@ -1,5 +1,8 @@
 <?php
 	require_once(HelperPath.DS.'SessionModel.php');
+	require_once(ModelPath.DS.'UserModel.php');
+	require_once(HelperPath.DS.'HTMLView.php');
+	require_once(ViewPath.DS.'LoginView.php');
 	require_once(ViewPath.DS.'MemberView.php');
 
 	class LoginController {
@@ -12,47 +15,70 @@
 
 		function __construct () {
 
-			// echo 'LoginView is instantiated and stored in a member of this controller class.';
 			$this->sessionModel = new SessionModel();
+			$this->mainView = new HTMLView();
 			$this->loginView = new LoginView();
 			$this->memberView = new MemberView();
 			$this->userModel = new UserModel();
 		}
 
-		public function GetLoginFormHTML () {
+		public function RunLoginLogic () {
 
+			// Initial setup of local variables.
+			// Retrieve needed HTML for the views.
 			$loginHTML = $this->loginView->GetLoginFormHTML();
-			return $loginHTML;
-			// var_dump($loginHTML);
-		}
-
-		public function GetMemberStartHTML() {
-
 			$memberHTML = $this->memberView->GetMemberStartHTML();
-			return $memberHTML;
-		}
 
-		public function IsLoggedIn() {
+			// Set user authenticated flag
+			$userAuthenticated = false;
 
-			return $this->sessionModel->IsLoggedIn();
-		}
+			// Assign needed instances in local variables.
+			$loginView = clone $this->loginView;		
+			$memberView = clone $this->memberView;
+			$sessionModel = clone $this->sessionModel;
 
-		public function UserPressLoginButton () {
 
-			return $this->loginView->UserPressLoginButton();
-		}
+			// RENDER START PAGE Render loginView if user is not already logged in and did not press Login Button
+			if(!$sessionModel->IsLoggedIn() && !$loginView->UserPressLoginButton()) {
 
-		public function UserPressLogoutButton () {
+				echo $this->mainView->echoHTML($loginHTML);
+			}
 
-			return $this->memberView->UserPressLogoutButton();
-		}
-
-		public function LogoutUser () {
+			// USER LOGS OUT
+			if ($memberView->UserPressLogoutButton()) {
 				
-			$this->sessionModel->LogoutUser();
+				$this->sessionModel->LogoutUser();
+			}
+
+			// USER MAKES A LOGIN REQUEST
+			if ($loginView->UserPressLoginButton()) {
+				
+				$userAuthenticated = $this->AuthenticateUser();
+
+				// If comparison to database succeeded login user
+				if ($userAuthenticated) {
+					
+					echo $this->mainView->echoHTML($memberHTML);
+					return true;
+				}
+				else {
+
+					var_dump("Error!");
+				}
+			}
+
+			// USER IS ALREADY LOGGED IN AND RELOADS PAGE.
+			if ($sessionModel->IsLoggedIn()) {
+				
+				echo $this->mainView->echoHTML($memberHTML);
+				return true;
+			}			
 		}
 
-		public function AuthenticateUser () {
+		// HELPER FUNCTIONS FOR THIS CONTROLLER
+
+		// Authentication logic. 
+		protected function AuthenticateUser () {
 
 			$username = $this->loginView->GetUsername();
 			$password = $this->loginView->GetPassword();
