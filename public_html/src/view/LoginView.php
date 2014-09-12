@@ -3,19 +3,22 @@
 
 		public function GetLoginFormHTML () {
 
-			$loginHTML = '<form id="login" enctype="multipart/form-data" method="post">
-				<div class="loginField">
-					<label for="username">Enter Username</label><br />
-					<input type="text" name="username" maxlength="30" id="username" /><br />
-				</div>
-				<div class="loginField">
-					<label for="password">Enter Password</label><br />
-					<input type="password" name="password" maxlength="30" id="password" /><br />
-				</div>
+			$loginHTML = 
+			'<h2>Ej Inloggad</h2>
 
-				<div class="button">
-					<input type="submit" name="submit" id="login" value="Log In" />
-				</div>
+			<form id="login" enctype="multipart/form-data" method="post">
+				<fieldset>
+					<legend>Login - Skriv in användarnamn och lösenord</legend>
+					<label for="username">Användarnamn : </label>
+					<input type="text" name="username" maxlength="30" id="username" />
+
+					<label for="password">Lösenord : </label>
+					<input type="password" name="password" maxlength="30" id="password" />
+
+					<label for="autologin">Håll mig inloggad :</label>
+					<input id="autologin" type="checkbox" name="LoginView::Checked">
+					<input type="submit" name="submit" id="login" value="Logga in" />
+				</fieldset>
 			</form>';
 
 			return $loginHTML;			

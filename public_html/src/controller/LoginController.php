@@ -38,7 +38,7 @@
 			$sessionModel = clone $this->sessionModel;
 
 
-			// RENDER START PAGE Render loginView if user is not already logged in and did not press Login Button
+			// RENDER START PAGE, Render loginView if user is not already logged in and did not press Login Button
 			if(!$sessionModel->IsLoggedIn() && !$loginView->UserPressLoginButton()) {
 
 				echo $this->mainView->echoHTML($loginHTML);

@@ -12,8 +12,11 @@
 			echo 
 				"<!DOCTYPE HTML>
 					<html>
-						<head></head>
+						<head>
+							<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">
+						</head>
 						<body>
+							<h1>PHP Laboration 1</h1>
 							$body
 						</body>
 					</html>";
