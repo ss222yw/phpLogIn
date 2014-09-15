@@ -7,7 +7,10 @@
 
 		function __construct () {
 
-			// session_start();
+			if (!isset($_SESSION['LoginValues'])) {
+				
+				$_SESSION['LoginValues']['username'] = '';
+			}
 		}
 
 		public function IsLoggedIn () {
@@ -25,8 +28,7 @@
 		public function LogoutUser () {
 
 			unset($_SESSION['userId']);
-			// unset($this->userId);
 			$this->isLoggedIn = false;
-			header('Location: index.php');
+			@header('Location: ' . $_SERVER['PHP_SELF']);
 		}
 	}

@@ -1,5 +1,6 @@
 <?php
 	require_once(HelperPath.DS.'SessionModel.php');
+	require_once(ModelPath.DS.'Validator.php');
 	require_once(ModelPath.DS.'UserModel.php');
 	require_once(HelperPath.DS.'HTMLView.php');
 	require_once(ViewPath.DS.'LoginView.php');
@@ -12,6 +13,7 @@
 		private $memberView;
 		private $userModel;
 		private $sessionModel;
+		private $validator;
 
 		function __construct () {
 
@@ -27,7 +29,7 @@
 			// Initial setup of local variables.
 			// Retrieve needed HTML for the views.
 			$loginHTML = $this->loginView->GetLoginFormHTML();
-			$memberHTML = $this->memberView->GetMemberStartHTML();
+			$memberHTML = $this->memberView->GetMemberStartHTML("Inloggning lyckades.");
 
 			// Set user authenticated flag
 			$userAuthenticated = false;
@@ -41,35 +43,52 @@
 			// RENDER START PAGE, Render loginView if user is not already logged in and did not press Login Button
 			if(!$sessionModel->IsLoggedIn() && !$loginView->UserPressLoginButton()) {
 
+				// Generate output data
 				echo $this->mainView->echoHTML($loginHTML);
+				return;
 			}
 
 			// USER LOGS OUT
 			if ($memberView->UserPressLogoutButton()) {
 				
-				$this->sessionModel->LogoutUser();
+				if ($memberView->UserPressLogoutButton()) {
+					
+					$loginHTML = $this->loginView->GetLoginFormHTML('Du är nu utloggad.');
+					echo $this->mainView->echoHTML($loginHTML);
+
+					$sessionModel->LogoutUser();
+				}
+
+
+				// $this->sessionModel->LogoutUser();
+				// $loginHTML = $this->loginView->GetLoginFormHTML('Du är nu utloggad.');
+				// echo $this->mainView->echoHTML($loginHTML);
 			}
 
 			// USER MAKES A LOGIN REQUEST
 			if ($loginView->UserPressLoginButton()) {
 				
-				$userAuthenticated = $this->AuthenticateUser();
+				$result = $this->AuthenticateUser();
 
 				// If comparison to database succeeded login user
-				if ($userAuthenticated) {
+				if ($result === true) {
 					
-					echo $this->mainView->echoHTML($memberHTML);
+					// Generate output data
+					echo $this->mainView->echoHTML($memberHTML);					
 					return true;
 				}
 				else {
 
-					var_dump("Error!");
+					$loginHTML = $this->loginView->GetLoginFormHTML($result);
+					echo $this->mainView->echoHTML($loginHTML);
 				}
 			}
 
 			// USER IS ALREADY LOGGED IN AND RELOADS PAGE.
 			if ($sessionModel->IsLoggedIn()) {
 				
+				// Generate output data
+				$memberHTML = $this->memberView->GetMemberStartHTML('');
 				echo $this->mainView->echoHTML($memberHTML);
 				return true;
 			}			
@@ -83,12 +102,24 @@
 			$username = $this->loginView->GetUsername();
 			$password = $this->loginView->GetPassword();
 
+			$message = $this->loginView->Validate();
+
+			if ($message !== true) {
+				
+				return $message;
+			}
+
+			// Check with database if username and password exist.
 			$userAuthenticated = $this->userModel->AuthenticateUser($username, $password);
 			
-			if ($userAuthenticated || $this->sessionModel->IsLoggedIn()) {
+			if ($userAuthenticated) {
 
 				$this->sessionModel->LoginUser($this->userModel);
 				return $userAuthenticated;
+			}
+			else {
+
+				return $this->loginView->GetLoginErrorMessage();
 			}
 		}
 	}

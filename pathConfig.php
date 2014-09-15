@@ -27,13 +27,11 @@
 
 	// REQUIRE MODELS
 	require_once(ModelPath.DS.'UserModel.php');
-	// require_once(ModelPath.DS.'Validator.php');
 
 	// REQUIRE VIEWS
 	require_once(HelperPath.DS.'HTMLView.php');
 	require_once(ViewPath.DS.'LoginView.php');
 	require_once(ViewPath.DS.'MemberView.php');
-	require_once(ViewPath.DS.'CookieStorage.php');
 
 	// REQUIRE CONTROLLERS
 	require_once(ControllerPath.DS.'LoginController.php');
