@@ -31,13 +31,18 @@
 			if ($result === false) {
 				// TODO: Create an output function.
 				$output = mysql_error();
-				// echo $output;
+				var_dump($output); die();
 				return false;
 
 			} else {
 
 				return $result;
 			}
+		}
+
+		public function StoreResult () {
+
+			mysql_query("mysql_use_result()", $this->connection);
 		}
 	}
 

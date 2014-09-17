@@ -88,31 +88,21 @@
 			return true;
 		}
 
-		public function AutoLoginIsChecked () {
+		public function RememberMe () {
 
-			$isChecked = false;
+			$rememberMe = false;
 
 			if (isset($_POST['rememberMe'])) {
 				
-				$isChecked = $_POST['rememberMe'];
+				$rememberMe = $_POST['rememberMe'];
 			}
 
-			return ($isChecked == 'true' || $isChecked == 'on') ? true : false;
+			return ($rememberMe == 'true' || $rememberMe == 'on') ? true : false;
 		}
 
-		public function SaveUserCredentials ($username, $password, $cookieTimestamp) {
+		public function SaveUserCredentials ($username, $password) {
 
-			$this->cookieStorage->SaveUserCredentials($username, $password, $cookieTimestamp);
-		}
-
-		public function DeleteUserCredentials () {
-
-			$this->cookieStorage->DeleteUserCredentials();
-		}
-
-		public function RememberMe () {
-
-			$this->cookieStorage->RememberMe();
+			$this->cookieStorage->SaveUserCredentials($username, $password);
 		}
 
 		public function GetLoginErrorMessage () {

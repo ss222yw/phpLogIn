@@ -19,8 +19,14 @@
 			return isset($_SESSION['userId']);
 		}
 
+		public function GetUserId () {
+
+			return $this->userId;
+		}
+
 		public function LoginUser (UserModel $user) {
 
+			// session_set_cookie_params(0);
 			$this->userId = $_SESSION["userId"] = $user->GetUserId();
 			$this->isLoggedIn = true;
 		}
@@ -29,6 +35,5 @@
 
 			unset($_SESSION['userId']);
 			$this->isLoggedIn = false;
-			@header('Location: ' . $_SERVER['PHP_SELF']);
 		}
 	}

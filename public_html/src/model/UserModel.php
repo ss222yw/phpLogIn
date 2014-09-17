@@ -4,12 +4,13 @@
 	class UserModel {
 
 		protected static $tableName = "user";
-		// protected static $dbFields = array('userId', 'username', 'password', 'firstname', 'surname');
+		
 		private $userId;
 		private $username;
 		private $password;
 		private $firstname;
 		private $surname;
+		private $autologin;
 
 		// UNCOMMENTED FAKE AUTHENTICATION DATA
 		// public function __construct () {
@@ -26,7 +27,15 @@
 
 			global $database;
 
-			$result = mysql_query("CALL AuthenticateUser('{$username}', '{$password}')");
+			// $result = mysql_query("CALL AuthenticateUser('{$username}', '{$password}')");
+
+			// $database->StoreResult();
+
+			$query = "SELECT * from user
+			WHERE username = '{$username}'
+			AND password = '{$password}'";
+			
+			$result = $database->ExecuteSqlQuery($query);
 
 			// MAYBE MOVE THIS CODE TO A COMMON DATABASE CLASS INHERITED BY THIS CLASS.
 			if (mysql_num_rows($result) === 1) {
@@ -40,12 +49,39 @@
 					$this->firstname = $row['firstname'];
 					$this->surname = $row['surname'];
 				}
+
 				return true;
 			}
 			else {
 
 				return false;
 			}
+		}
+
+		public function SaveCookieTimestamp ($timestamp, $userId) {
+
+			global $database;
+
+			$result = mysql_query("CALL SaveCookieTimestamp('{$timestamp}', '{$userId}')");
+
+			// $result = $database->ExecuteSqlQuery($query);
+			// mysql_affected_rows($result); die();
+			// return mysql_num_rows($result) ? true : false;
+		}
+
+		public function GetCookieDateById () {
+
+			global $database;
+
+			$query = "SELECT autologin 
+			FROM user
+			WHERE userId = 1";
+			
+			$result = $database->ExecuteSqlQuery($query);
+
+			$timestamp = array_shift(mysql_fetch_row($result));
+
+			return $timestamp;
 		}
 	}
 

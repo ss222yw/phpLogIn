@@ -9,18 +9,14 @@
 				throw new \Exception("HTMLView->HTMLView does not allow body to be null");
 			}
 
-			$timestamp = time();
-
-			$date = '<p>' . 'datum' . '</p>';
-
 			$time = '[' . strftime("%H:%M:%S") . ']';
 			$year = date("Y");
 			$month = date("M");
 			$day = date("d");
 
-			$weekday = $this->GetSwedishWeekday(date("d"), date("M"), date("Y"));
+			$sweWeekday = $this->GetSwedishWeekday(date("d"), date("M"), date("Y"));
 			$sweMonth = $this->GetSwedishMonth(strftime("%Y"), strftime("%m"), strftime("%d"));
-			$date = '<p>' . $weekday . ', den ' . $day . ' ' . $sweMonth . ' år ' . $year . '. ' . 'Klockan är ' . $time . '</p>';			
+			$date = '<p>' . $sweWeekday . ', den ' . $day . ' ' . $sweMonth . ' år ' . $year . '. ' . 'Klockan är ' . $time . '</p>';			
 
 			echo 
 				'<!DOCTYPE HTML>

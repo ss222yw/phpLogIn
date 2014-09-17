@@ -26,11 +26,6 @@
 
 		public function RunLoginLogic () {
 
-			// Initial setup of local variables.
-			// Retrieve needed HTML for the views.
-			$loginHTML = $this->loginView->GetLoginFormHTML();
-			$memberHTML = $this->memberView->GetMemberStartHTML("Inloggning lyckades.");
-
 			// Set user authenticated flag
 			$userAuthenticated = false;
 
@@ -39,9 +34,13 @@
 			$memberView = clone $this->memberView;
 			$sessionModel = clone $this->sessionModel;
 
+			// Initial setup of local variables.
+			// Retrieve needed HTML for the views.
+			$loginHTML = $this->loginView->GetLoginFormHTML();
+			$memberHTML = $this->memberView->GetMemberStartHTML("Inloggning lyckades.");
 
 			// RENDER START PAGE, Render loginView if user is not already logged in and did not press Login Button
-			if(!$sessionModel->IsLoggedIn() && !$loginView->UserPressLoginButton()) {
+			if(!$sessionModel->IsLoggedIn() && !$loginView->UserPressLoginButton() && !isset($_COOKIE['username'])) {
 
 				// Generate output data
 				echo $this->mainView->echoHTML($loginHTML);
@@ -51,18 +50,8 @@
 			// USER LOGS OUT
 			if ($memberView->UserPressLogoutButton()) {
 				
-				if ($memberView->UserPressLogoutButton()) {
-					
-					$loginHTML = $this->loginView->GetLoginFormHTML('Du är nu utloggad.');
-					echo $this->mainView->echoHTML($loginHTML);
-
-					$sessionModel->LogoutUser();
-				}
-
-
-				// $this->sessionModel->LogoutUser();
-				// $loginHTML = $this->loginView->GetLoginFormHTML('Du är nu utloggad.');
-				// echo $this->mainView->echoHTML($loginHTML);
+				$this->LogoutUser();
+				return true;
 			}
 
 			// USER MAKES A LOGIN REQUEST
@@ -73,24 +62,44 @@
 				// If comparison to database succeeded login user
 				if ($result === true) {
 					
-					// Generate output data
+					// Set special successmessage IF user wants to be remembered.
+					// TODO: MOVE THIS IF STATIEMENT OUTSIDE AND ABOVE THE RESULT CHECK
+					if ($loginView->AutoLoginIsChecked()) {
+
+						$memberHTML = $this->memberView->GetMemberStartHTML("Inloggning lyckades och vi kommer ihåg dig nästa gång");
+					}
+
+					// Render memberView.
 					echo $this->mainView->echoHTML($memberHTML);					
 					return true;
 				}
 				else {
 
+					// Set error messages if authentication failed.
 					$loginHTML = $this->loginView->GetLoginFormHTML($result);
 					echo $this->mainView->echoHTML($loginHTML);
 				}
 			}
 
-			// USER IS ALREADY LOGGED IN AND RELOADS PAGE.
-			if ($sessionModel->IsLoggedIn()) {
+			// USER IS ALREADY LOGGED IN AND RELOADS PAGE or USER LOGGED IN WITH REMEMBER ME AND RELOADS
+			if ($sessionModel->IsLoggedIn() || isset($_COOKIE['username'])) {
+
+
+				if ($sessionModel->IsLoggedIn() && !isset($_COOKIE['username'])) {
+					
+					// Generate output data
+					$memberHTML = $this->memberView->GetMemberStartHTML('');
+					echo $this->mainView->echoHTML($memberHTML);
+
+					return true;
+				}
 				
-				// Generate output data
-				$memberHTML = $this->memberView->GetMemberStartHTML('');
-				echo $this->mainView->echoHTML($memberHTML);
-				return true;
+				// Check if somebody manipulated cookies.
+				if ($this->UserCredentialManipulated() || $this->CookieDateManipulated()) {
+
+					$this->LogoutUser('Fel information i cookie.');
+					return true;
+				}
 			}			
 		}
 
@@ -102,24 +111,64 @@
 			$username = $this->loginView->GetUsername();
 			$password = $this->loginView->GetPassword();
 
+			// 1. CLIENT-WORK: VALIDATE IN-DATA 
 			$message = $this->loginView->Validate();
+
 
 			if ($message !== true) {
 				
 				return $message;
 			}
 
-			// Check with database if username and password exist.
+			// 2. SERVER-AUTHENTICATION: CHECK WITH DATABASE IF USERNAME AND PASSWORD EXIST
 			$userAuthenticated = $this->userModel->AuthenticateUser($username, $password);
 			
 			if ($userAuthenticated) {
 
+				// TODO: Check that this is not done more than once.
 				$this->sessionModel->LoginUser($this->userModel);
+
+				if ($this->loginView->AutoLoginIsChecked()) {
+
+					// TODO: Change 30 to a constant/variable.
+					$cookieTimestamp = time() + 30;
+					$this->loginView->SaveUserCredentials($username, $password, $cookieTimestamp);
+					$this->userModel->SaveCookieTimestamp($cookieTimestamp, $this->sessionModel->GetuserId());
+				}
+
 				return $userAuthenticated;
 			}
 			else {
 
 				return $this->loginView->GetLoginErrorMessage();
 			}
+		}
+
+		protected function UserCredentialManipulated () {
+
+			// TODO: Get the cookie values from the view before sending them to AuthenticateUser.
+			return !$this->userModel->AuthenticateUser($_COOKIE['username'], $_COOKIE['password']);
+		}
+
+		protected function CookieDateManipulated () {
+
+			$currentTime = time();
+			$cookieExpTime = (int)($this->userModel->GetCookieDateById());
+
+			return ($currentTime > $cookieExpTime) ? true : false;
+		}
+
+		protected function LogOutUser ($successMessage = 'Du är nu utloggad.') {
+
+				// Remove cookies if remember me. 
+				if (isset($_COOKIE['username'])) {
+					
+					$this->loginView->DeleteUserCredentials();
+				}
+
+				// Logout user and render loginView.
+				$this->sessionModel->LogoutUser();
+				$loginHTML = $this->loginView->GetLoginFormHTML($successMessage);
+				echo $this->mainView->echoHTML($loginHTML);	
 		}
 	}

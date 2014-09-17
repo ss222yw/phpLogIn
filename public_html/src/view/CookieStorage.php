@@ -3,23 +3,30 @@
 	class CookieStorage {
 
 		// private static $cookieName = "CookieStorage";
-		private static $errorCookieName = "errors";
+		public $username;
+		public $password;
+		private static $usernameCookie = "username";
+		private static $passwordCookie = "password";
 
-			// public function save($string) {
+		public function SaveUserCredentials ($username, $password, $cookieTimestamp) {
 
-			// 	// $string is the value to save in the cookie.
-			// 	setcookie( self::$cookieName, $string, -1);
-			// 	//var_dump($_COOKIE);
-			// 	//die();
-			// }
+			setcookie(self::$usernameCookie, $username, $cookieTimestamp, "/");
+			setcookie(self::$passwordCookie, $password, $cookieTimestamp, "/");
+		}
 
-			public function SetErrorMessage ($key, $value) {
+		public function DeleteUserCredentials () {
 
-				setcookie(self::$errorCookieName . '[' . $key . ']', $value, -1, "/");
-			}
+			setcookie(self::$usernameCookie, "", 1, "/");
+			setcookie(self::$passwordCookie, "", 1, "/");
+		}
 
-			public function DeleteErrorMessage () {
+		public function RememberMe () {
 
-				setcookie(self::$errorCookieName, "", 1, "/");
-			}
+			return isset($_COOKIE["username"]);
+		}
+
+		public function UserCredentialManipulated ($username, $password) {
+
+
+		}
 	}
