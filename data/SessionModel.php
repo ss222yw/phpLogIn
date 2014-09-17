@@ -26,8 +26,13 @@
 
 		public function LoginUser (UserModel $user) {
 
+			global $remote_ip;
+			// global $b_ip;
+			global $user_agent;
+
 			// session_set_cookie_params(0);
 			$this->userId = $_SESSION["userId"] = $user->GetUserId();
+			$_SESSION["unique"] = hash("sha256", $remote_ip . $user_agent);
 			$this->isLoggedIn = true;
 		}
 

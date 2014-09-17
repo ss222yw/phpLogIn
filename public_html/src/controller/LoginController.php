@@ -26,6 +26,9 @@
 
 		public function RunLoginLogic () {
 
+			global $remote_ip;
+			global $b_ip;
+			global $user_agent;
 			// Set user authenticated flag
 			$userAuthenticated = false;
 
@@ -84,7 +87,14 @@
 			// USER IS ALREADY LOGGED IN AND RELOADS PAGE or USER LOGGED IN WITH REMEMBER ME AND RELOADS
 			if ($sessionModel->IsLoggedIn() || isset($_COOKIE['username'])) {
 
-				
+				$validId = hash("sha256", $remote_ip . $user_agent);
+
+				if ($validId != $_SESSION['unique']) {
+					
+					$this->LogoutUser();
+					return true;
+				}
+
 				// Check if somebody manipulated cookies.
 				if ( ($this->UserCredentialManipulated() || $this->CookieDateManipulated()) && isset($_COOKIE['username']) ) {
 
@@ -93,7 +103,15 @@
 				}
 
 				// Generate output data
-				$memberHTML = $this->memberView->GetMemberStartHTML('');
+				if ($sessionModel->IsLoggedIn()) {
+					
+					$memberHTML = $this->memberView->GetMemberStartHTML('');
+				}
+				else {
+
+					$memberHTML = $this->memberView->GetMemberStartHTML('Inloggning lyckades via cookies.');
+				}
+				
 				echo $this->mainView->echoHTML($memberHTML);
 
 				return true;
