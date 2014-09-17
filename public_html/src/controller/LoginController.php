@@ -84,23 +84,20 @@
 			// USER IS ALREADY LOGGED IN AND RELOADS PAGE or USER LOGGED IN WITH REMEMBER ME AND RELOADS
 			if ($sessionModel->IsLoggedIn() || isset($_COOKIE['username'])) {
 
-
-				if ($sessionModel->IsLoggedIn() && !isset($_COOKIE['username'])) {
-					
-					// Generate output data
-					$memberHTML = $this->memberView->GetMemberStartHTML('');
-					echo $this->mainView->echoHTML($memberHTML);
-
-					return true;
-				}
 				
 				// Check if somebody manipulated cookies.
-				if ($this->UserCredentialManipulated() || $this->CookieDateManipulated()) {
+				if ( ($this->UserCredentialManipulated() || $this->CookieDateManipulated()) && isset($_COOKIE['username']) ) {
 
 					$this->LogoutUser('Fel information i cookie.');
 					return true;
 				}
-			}			
+
+				// Generate output data
+				$memberHTML = $this->memberView->GetMemberStartHTML('');
+				echo $this->mainView->echoHTML($memberHTML);
+
+				return true;
+			}
 		}
 
 		// HELPER FUNCTIONS FOR THIS CONTROLLER
@@ -147,7 +144,7 @@
 		protected function UserCredentialManipulated () {
 
 			// TODO: Get the cookie values from the view before sending them to AuthenticateUser.
-			return !$this->userModel->AuthenticateUser($_COOKIE['username'], $_COOKIE['password']);
+			return !@$this->userModel->AuthenticateUser($_COOKIE['username'], $_COOKIE['password']);
 		}
 
 		protected function CookieDateManipulated () {

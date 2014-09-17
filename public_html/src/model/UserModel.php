@@ -79,7 +79,8 @@
 			
 			$result = $database->ExecuteSqlQuery($query);
 
-			$timestamp = array_shift(mysql_fetch_row($result));
+			$resultArr = mysql_fetch_row($result);
+			$timestamp = array_shift($resultArr);
 
 			return $timestamp;
 		}
