@@ -89,9 +89,9 @@
 
 				$validId = hash("sha256", $remote_ip . $user_agent);
 
-				if ($validId != $_SESSION['unique']) {
+				if (isset($_SESSION['unique']) && $validId != $_SESSION['unique']) {
 					
-					$this->LogoutUser();
+					$this->LogoutUser('');
 					return true;
 				}
 
@@ -148,7 +148,7 @@
 					// TODO: Change 30 to a constant/variable.
 					$cookieTimestamp = time() + 30;
 					$this->loginView->SaveUserCredentials($username, $password, $cookieTimestamp);
-					$this->userModel->SaveCookieTimestamp($cookieTimestamp, $this->sessionModel->GetuserId());
+					$this->userModel->SaveCookieTimestamp($cookieTimestamp, $this->sessionModel->GetUserId());
 				}
 
 				return $userAuthenticated;
