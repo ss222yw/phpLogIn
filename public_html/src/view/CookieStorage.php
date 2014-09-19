@@ -10,8 +10,9 @@
 
 		public function SaveUserCredentials ($username, $password, $cookieTimestamp) {
 
+			$hashedPassword = hash("sha256", $password);
 			setcookie(self::$usernameCookie, $username, $cookieTimestamp, "/");
-			setcookie(self::$passwordCookie, $password, $cookieTimestamp, "/");
+			setcookie(self::$passwordCookie, $hashedPassword, $cookieTimestamp, "/");
 		}
 
 		public function DeleteUserCredentials () {

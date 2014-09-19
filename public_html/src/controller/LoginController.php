@@ -59,18 +59,19 @@
 
 			// USER MAKES A LOGIN REQUEST
 			if ($loginView->UserPressLoginButton()) {
+
+				// Set special successmessage IF user wants to be remembered.
+				// TODO: MOVE THIS IF STATEMENT OUTSIDE AND ABOVE THE RESULT CHECK
+				// TODO: MOVE THIS IF STATEMENT TO THE VIEW.
+				if ($loginView->AutoLoginIsChecked()) {
+
+					$memberHTML = $this->memberView->GetMemberStartHTML("Inloggning lyckades och vi kommer ihåg dig nästa gång.");
+				}
 				
 				$result = $this->AuthenticateUser();
 
-				// If comparison to database succeeded login user
+				// If comparison to database succeeded login user.
 				if ($result === true) {
-					
-					// Set special successmessage IF user wants to be remembered.
-					// TODO: MOVE THIS IF STATIEMENT OUTSIDE AND ABOVE THE RESULT CHECK
-					if ($loginView->AutoLoginIsChecked()) {
-
-						$memberHTML = $this->memberView->GetMemberStartHTML("Inloggning lyckades och vi kommer ihåg dig nästa gång");
-					}
 
 					// Render memberView.
 					echo $this->mainView->echoHTML($memberHTML);					
@@ -87,6 +88,7 @@
 			// USER IS ALREADY LOGGED IN AND RELOADS PAGE or USER LOGGED IN WITH REMEMBER ME AND RELOADS
 			if ($sessionModel->IsLoggedIn() || isset($_COOKIE['username'])) {
 
+				// row 90 -> 97 can be moved into a function in SessionModel.
 				$validId = hash("sha256", $remote_ip . $user_agent);
 
 				if (isset($_SESSION['unique']) && $validId != $_SESSION['unique']) {
@@ -102,16 +104,19 @@
 					return true;
 				}
 
-				// Generate output data
+				// OUTPUT DATA
 				if ($sessionModel->IsLoggedIn()) {
 					
+					// TODO: OUTPUT, this can be in the view.
 					$memberHTML = $this->memberView->GetMemberStartHTML('');
 				}
 				else {
 
+					// TODO: OUTPUT, this can be in the view.
 					$memberHTML = $this->memberView->GetMemberStartHTML('Inloggning lyckades via cookies.');
 				}
 				
+				// OUTPUT
 				echo $this->mainView->echoHTML($memberHTML);
 
 				return true;
@@ -161,12 +166,20 @@
 
 		protected function UserCredentialManipulated () {
 
+			// COMPARE TO HASHED PASSWORD!
+			// TODO: MOVE THIS TO THE VIEW.
 			// TODO: Get the cookie values from the view before sending them to AuthenticateUser.
-			return !@$this->userModel->AuthenticateUser($_COOKIE['username'], $_COOKIE['password']);
+
+			// execute return below if passwords in database are hased.
+			// return !@$this->userModel->AuthenticateUser($_COOKIE['username'], $_COOKIE['password']);
+
+			// execute below if passwords in database are not hashed.
+			return !@$this->userModel->UserCredentialManipulated($_COOKIE['username'], $_COOKIE['password']);
 		}
 
 		protected function CookieDateManipulated () {
 
+			// TODO: Move this logic to view.
 			$currentTime = time();
 			$cookieExpTime = (int)($this->userModel->GetCookieDateById());
 
@@ -175,15 +188,15 @@
 
 		protected function LogOutUser ($successMessage = 'Du är nu utloggad.') {
 
-				// Remove cookies if remember me. 
-				if (isset($_COOKIE['username'])) {
-					
-					$this->loginView->DeleteUserCredentials();
-				}
+			// Remove cookies if remember me. 
+			if (isset($_COOKIE['username'])) {
+				
+				$this->loginView->DeleteUserCredentials();
+			}
 
-				// Logout user and render loginView.
-				$this->sessionModel->LogoutUser();
-				$loginHTML = $this->loginView->GetLoginFormHTML($successMessage);
-				echo $this->mainView->echoHTML($loginHTML);	
+			// Logout user and render loginView.
+			$this->sessionModel->LogoutUser();
+			$loginHTML = $this->loginView->GetLoginFormHTML($successMessage);
+			echo $this->mainView->echoHTML($loginHTML);
 		}
 	}

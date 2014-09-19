@@ -23,6 +23,7 @@
 					<html>
 						<head>
 							<meta content="text/html; charset=utf-8" http-equiv="content-type">
+							<title>Sherief Badran</title>
 						</head>
 						<body>
 							<h1>PHP Laboration 1</h1>' .

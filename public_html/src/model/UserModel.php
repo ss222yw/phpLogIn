@@ -84,6 +84,15 @@
 
 			return $timestamp;
 		}
+
+		public function UserCredentialManipulated ($username, $data) {
+
+			$u = 'Admin';
+			$p = 'Password';
+			$hp = hash("sha256", $p);
+
+			return ($u === $username && $hp === $data);
+		}
 	}
 
 

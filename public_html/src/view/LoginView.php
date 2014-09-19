@@ -37,9 +37,9 @@
 					'<label for="password">Lösenord : </label>' .
 					'<input type="password" name="password" maxlength="30" id="password" /> ' .
 
-					'<label for="autologin">Håll mig inloggad :</label>
+					'<label for="rememberMe">Håll mig inloggad :</label>
 					<input id="rememberMe" type="checkbox" name="rememberMe">
-					<input type="submit" name="submit" id="login" value="Logga in" />
+					<input type="submit" name="submit" id="submit" value="Logga in" />
 				</fieldset>
 			</form>';
 
