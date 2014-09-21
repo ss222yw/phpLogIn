@@ -9,16 +9,15 @@
 	class LoginController {
 		// REMINDER: WHEN CREATING MODELS, THE MODEL MIGHT HAVE TO INHERIT FROM THE DATABASE OBJECTS IN THE HELPERS FOLDER?
 
+		private $sessionModel;
 		private $loginView;
 		private $memberView;
 		private $userModel;
-		private $sessionModel;
-		private $validator;
+		private static $hashString = "sha256";
 
 		function __construct () {
 
 			$this->sessionModel = new SessionModel();
-			$this->mainView = new HTMLView();
 			$this->loginView = new LoginView();
 			$this->memberView = new MemberView();
 			$this->userModel = new UserModel();
@@ -29,24 +28,20 @@
 			global $remote_ip;
 			global $b_ip;
 			global $user_agent;
-			// Set user authenticated flag
-			$userAuthenticated = false;
 
-			// Assign needed instances in local variables.
+			// Set page reload flag
+			$onReload = false;
+
+			// Assign needed instances in local variables (Experiment).
 			$loginView = clone $this->loginView;		
 			$memberView = clone $this->memberView;
 			$sessionModel = clone $this->sessionModel;
 
-			// Initial setup of local variables.
-			// Retrieve needed HTML for the views.
-			$loginHTML = $this->loginView->GetLoginFormHTML();
-			$memberHTML = $this->memberView->GetMemberStartHTML("Inloggning lyckades.");
-
 			// RENDER START PAGE, Render loginView if user is not already logged in and did not press Login Button
-			if(!$sessionModel->IsLoggedIn() && !$loginView->UserPressLoginButton() && !isset($_COOKIE['username'])) {
+			if(!$sessionModel->IsLoggedIn() && !$loginView->UserPressLoginButton() && !$memberView->RememberMe()) {
 
 				// Generate output data
-				echo $this->mainView->echoHTML($loginHTML);
+				$loginView->RenderLoginForm();
 				return;
 			}
 
@@ -59,65 +54,45 @@
 
 			// USER MAKES A LOGIN REQUEST
 			if ($loginView->UserPressLoginButton()) {
-
-				// Set special successmessage IF user wants to be remembered.
-				// TODO: MOVE THIS IF STATEMENT OUTSIDE AND ABOVE THE RESULT CHECK
-				// TODO: MOVE THIS IF STATEMENT TO THE VIEW.
-				if ($loginView->AutoLoginIsChecked()) {
-
-					$memberHTML = $this->memberView->GetMemberStartHTML("Inloggning lyckades och vi kommer ihåg dig nästa gång.");
-				}
 				
 				$result = $this->AuthenticateUser();
 
-				// If comparison to database succeeded login user.
+				// If comparison to database succeeded login user and render memberarea.
 				if ($result === true) {
 
-					// Render memberView.
-					echo $this->mainView->echoHTML($memberHTML);					
+					$autoLoginIsSet = $loginView->AutoLoginIsChecked();
+					$memberView->RenderMemberArea($autoLoginIsSet, $onReload);		
 					return true;
 				}
 				else {
 
-					// Set error messages if authentication failed.
-					$loginHTML = $this->loginView->GetLoginFormHTML($result);
-					echo $this->mainView->echoHTML($loginHTML);
+					// render loginform with errormessage.
+					$loginView->RenderLoginForm($result);
 				}
 			}
 
 			// USER IS ALREADY LOGGED IN AND RELOADS PAGE or USER LOGGED IN WITH REMEMBER ME AND RELOADS
-			if ($sessionModel->IsLoggedIn() || isset($_COOKIE['username'])) {
+			if ($sessionModel->IsLoggedIn() || $memberView->RememberMe()) {
 
-				// row 90 -> 97 can be moved into a function in SessionModel.
-				$validId = hash("sha256", $remote_ip . $user_agent);
+				$onReload = true;
 
-				if (isset($_SESSION['unique']) && $validId != $_SESSION['unique']) {
+				$validId = hash(self::$hashString, $remote_ip . $user_agent);
+				if ($sessionModel->IsStolen($validId)) {
 					
-					$this->LogoutUser('');
-					return true;
+					$this->memberView->LogoutUser();
+					$this->loginView->RenderLoginForm();
+					return false;
 				}
 
 				// Check if somebody manipulated cookies.
-				if ( ($this->UserCredentialManipulated() || $this->CookieDateManipulated()) && isset($_COOKIE['username']) ) {
+				// This if statement only checks the or block if user klicked remember me because of the && - operator.
+				if ( $memberView->RememberMe() && ($this->UserCredentialManipulated() || $this->CookieDateManipulated()) ) {
 
-					$this->LogoutUser('Fel information i cookie.');
-					return true;
+					$this->LogoutUser(false);
+					return false;
 				}
 
-				// OUTPUT DATA
-				if ($sessionModel->IsLoggedIn()) {
-					
-					// TODO: OUTPUT, this can be in the view.
-					$memberHTML = $this->memberView->GetMemberStartHTML('');
-				}
-				else {
-
-					// TODO: OUTPUT, this can be in the view.
-					$memberHTML = $this->memberView->GetMemberStartHTML('Inloggning lyckades via cookies.');
-				}
-				
-				// OUTPUT
-				echo $this->mainView->echoHTML($memberHTML);
+				$memberView->RenderMemberArea(false, $onReload);
 
 				return true;
 			}
@@ -152,7 +127,7 @@
 
 					// TODO: Change 30 to a constant/variable.
 					$cookieTimestamp = time() + 30;
-					$this->loginView->SaveUserCredentials($username, $password, $cookieTimestamp);
+					$this->memberView->SaveUserCredentials($username, $password, $cookieTimestamp);
 					$this->userModel->SaveCookieTimestamp($cookieTimestamp, $this->sessionModel->GetUserId());
 				}
 
@@ -174,7 +149,18 @@
 			// return !@$this->userModel->AuthenticateUser($_COOKIE['username'], $_COOKIE['password']);
 
 			// execute below if passwords in database are not hashed.
-			return !@$this->userModel->UserCredentialManipulated($_COOKIE['username'], $_COOKIE['password']);
+			try {
+
+				$username = $this->memberView->GetCookieUsername();
+				$password = $this->memberView->GetCookiePassword();				
+			}
+			catch (\Exception $e) {
+
+				// Handle error: Something went wrong, could not find cookies, return true so that user is thrown out.
+				return true;
+			}
+
+			return !@$this->userModel->UserCredentialManipulated($username, $password);
 		}
 
 		protected function CookieDateManipulated () {
@@ -186,17 +172,9 @@
 			return ($currentTime > $cookieExpTime) ? true : false;
 		}
 
-		protected function LogOutUser ($successMessage = 'Du är nu utloggad.') {
+		protected function LogoutUser ($isDefaultLogout = true) {
 
-			// Remove cookies if remember me. 
-			if (isset($_COOKIE['username'])) {
-				
-				$this->loginView->DeleteUserCredentials();
-			}
-
-			// Logout user and render loginView.
-			$this->sessionModel->LogoutUser();
-			$loginHTML = $this->loginView->GetLoginFormHTML($successMessage);
-			echo $this->mainView->echoHTML($loginHTML);
+			$this->memberView->LogoutUser();
+			$this->loginView->RenderLogoutView($isDefaultLogout);
 		}
 	}

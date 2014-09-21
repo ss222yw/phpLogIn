@@ -23,6 +23,11 @@
 			return $this->userId;
 		}
 
+		public function GetUsername () {
+
+			return $this->username;
+		}
+
 		public function AuthenticateUser ($username, $password) {
 
 			global $database;

@@ -1,18 +1,20 @@
 <?php
-	require_once(ViewPath.DS.'CookieStorage.php');
+	require_once(HelperPath.DS.'HTMLView.php');
 
 	class LoginView {
 
+		private $mainView;
 		private static $loginErrorMessage = "Felaktigt användarnamn och/eller lösenord.";
 		private static $emptyUsernameErrorMessage = "Användarnamn saknas.";
 		private static $emptyPasswordErrorMessage = "Lösenord saknas.";
+		private static $logOutSuccessMessage = "Du är nu utloggad.";
+		private static $corruptCookieLogoutMessage = "Fel information i cookie.";
 
-		private $cookieStorage;
 
-		function __construct() {
+		function __construct () {
 
-			$this->cookieStorage = new CookieStorage();
-		}	
+			$this->mainView = new HTMLView();
+		}		
 
 		public function GetLoginFormHTML ($message = '') {
 
@@ -46,6 +48,18 @@
 			$_SESSION['LoginValues']['username'] = "";
 
 			return $loginHTML;			
+		}
+
+		public function RenderLoginForm ($errorMessage = '') {
+
+			$loginHTML = $this->GetLoginFormHTML($errorMessage);
+			echo $this->mainView->echoHTML($loginHTML);
+		}
+
+		public function RenderLogoutView ($isDefaultLogout = true) {
+
+			$isDefaultLogout ? $this->RenderLoginForm(self::$logOutSuccessMessage)
+							 : $this->RenderLoginForm(self::$corruptCookieLogoutMessage);
 		}
 
 		public function GetUsername () {
@@ -98,21 +112,6 @@
 			}
 
 			return ($isChecked == 'true' || $isChecked == 'on') ? true : false;
-		}
-
-		public function SaveUserCredentials ($username, $password, $cookieTimestamp) {
-
-			$this->cookieStorage->SaveUserCredentials($username, $password, $cookieTimestamp);
-		}
-
-		public function DeleteUserCredentials () {
-
-			$this->cookieStorage->DeleteUserCredentials();
-		}
-
-		public function RememberMe () {
-
-			$this->cookieStorage->RememberMe();
 		}
 
 		public function GetLoginErrorMessage () {

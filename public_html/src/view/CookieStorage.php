@@ -7,6 +7,8 @@
 		public $password;
 		private static $usernameCookie = "username";
 		private static $passwordCookie = "password";
+		private static $cookieUsernameErrMsg = 'CookieUsername does not exist!';
+		private static $cookiePasswordErrMsg = 'CookiePassword does not exist!';
 
 		public function SaveUserCredentials ($username, $password, $cookieTimestamp) {
 
@@ -23,11 +25,30 @@
 
 		public function RememberMe () {
 
-			return isset($_COOKIE["username"]);
+			return isset($_COOKIE[self::$usernameCookie]);
 		}
 
-		public function UserCredentialManipulated ($username, $password) {
+		public function GetCookieUsername () {
 
+			if (isset($_COOKIE[self::$usernameCookie])) {
+				
+				return $_COOKIE[self::$usernameCookie];
+			}
+			else {
 
+				throw new \Exception(self::$cookieUsernameErrMsg);
+			}
 		}
+
+		public function GetCookiePassword () {
+
+			if (isset($_COOKIE[self::$passwordCookie])) {
+				
+				return $_COOKIE[self::$passwordCookie];
+			}
+			else {
+
+				throw new \Exception(self::$cookiePasswordErrMsg);
+			}
+		}		
 	}
