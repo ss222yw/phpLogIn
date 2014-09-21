@@ -33,6 +33,7 @@
 					</html>';
 		}
 
+		// Pattern ref: http://scriptcult.com/subcategory_4/article_885-get-weekday-name-based-on-date.html
 		public function GetSwedishWeekday ($day, $month, $yearForDay) {
 
 			$weekDay = Array(
