@@ -1,10 +1,11 @@
 <?php
 	require_once(HelperPath.DS.'SessionModel.php');
-	require_once(ModelPath.DS.'Validator.php');
+	//require_once(ModelPath.DS.'Validator.php');
 	require_once(ModelPath.DS.'UserModel.php');
 	require_once(HelperPath.DS.'HTMLView.php');
 	require_once(ViewPath.DS.'LoginView.php');
 	require_once(ViewPath.DS.'MemberView.php');
+	require_once(ViewPath.DS.'RegView.php');
 
 	class LoginController {
 		// REMINDER: WHEN CREATING MODELS, THE MODEL MIGHT HAVE TO INHERIT FROM THE DATABASE OBJECTS IN THE HELPERS FOLDER?
@@ -12,14 +13,16 @@
 		private $sessionModel;
 		private $loginView;
 		private $memberView;
+		private $regView;
 		private $userModel;
 		private static $hashString = "sha256";
-
+		private $showRegPage;
 		function __construct () {
 
 			$this->sessionModel = new SessionModel();
 			$this->loginView = new LoginView();
 			$this->memberView = new MemberView();
+			$this->regView = new RegView();
 			$this->userModel = new UserModel();
 		}
 
@@ -35,10 +38,11 @@
 			// Assign needed instances in local variables (Experiment).
 			$loginView = clone $this->loginView;		
 			$memberView = clone $this->memberView;
+			$regView = clone $this->regView;
 			$sessionModel = clone $this->sessionModel;
 
 			// RENDER START PAGE, Render loginView if user is not already logged in and did not press Login Button
-			if(!$sessionModel->IsLoggedIn() && !$loginView->UserPressLoginButton() && !$memberView->RememberMe()) {
+			if(!$sessionModel->IsLoggedIn() && !$loginView->UserPressLoginButton() && !$memberView->RememberMe() && !$loginView->userPressRegNewUser()) {
 
 				// Generate output data
 				$loginView->RenderLoginForm();

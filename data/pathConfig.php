@@ -6,7 +6,7 @@
 	defined('DS') ? null : define('DS', DIRECTORY_SEPARATOR);
 
 	// Define a project root path.
-	defined('ProjectRootPath') ? null : define('ProjectRootPath', DS.'Applications'.DS.'MAMP'.DS.'htdocs'.DS.'www'.DS.'git'.DS.'phpLogIn');
+	defined('ProjectRootPath') ? null : define('ProjectRootPath', 'C:'.DS.'phpLogIn');
 
 	// Define helper path.
 	defined('HelperPath') ? null : define('HelperPath', ProjectRootPath.DS.'data');
@@ -34,6 +34,7 @@
 	require_once(ViewPath.DS.'LoginView.php');
 	require_once(ViewPath.DS.'MemberView.php');
 	require_once(ViewPath.DS.'CookieStorage.php');
+	require_once(ViewPath.DS.'RegView.php');
 
 	// REQUIRE CONTROLLERS
 	require_once(ControllerPath.DS.'LoginController.php');

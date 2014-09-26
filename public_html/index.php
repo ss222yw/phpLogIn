@@ -1,4 +1,6 @@
 <?php
+	
+
 	session_start();
 
 	// Initialize security objects to identify hijacking.
@@ -12,7 +14,7 @@
 	}
 
 	require_once("../data/pathConfig.php");
-
+	
 	$loginController = new LoginController();
 
 	// Run Application

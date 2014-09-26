@@ -10,7 +10,7 @@
 		private static $logOutSuccessMessage = "Du är nu utloggad.";
 		private static $corruptCookieLogoutMessage = "Fel information i cookie.";
 
-
+ 
 		function __construct () {
 
 			$this->mainView = new HTMLView();
@@ -28,6 +28,10 @@
 
 			$loginHTML = 
 			'<h2>Ej Inloggad</h2>' .
+
+
+			'<a href="?registrera" name="registrera">Registrera ny användara</a>'.
+
 
 			'<form id="login" enctype="multipart/form-data" method="post" action="?login">' .
 				'<fieldset>' .
@@ -120,5 +124,13 @@
 			$_SESSION['LoginValues']['username'] = $this->GetUsername();
 
 			return self::$loginErrorMessage;
+		}
+
+		public function userPressRegNewUser(){
+			if (isset($_GET['Registrera'])) {
+				# code...
+				return true;
+			}
+			return false;
 		}
 	}
