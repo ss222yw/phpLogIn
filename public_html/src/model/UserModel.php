@@ -1,23 +1,25 @@
 <?php
 	require_once(HelperPath.DS.'Database.php');
 
-	class UserModel {
-
-		protected static $tableName = "user";
+	class UserModel extends Database{
 		
 		private $userId;
-		private $username;
-		private $password;
+		private $username ="username";
+	    private $password = "password";
+	    private $usernamee;
 		private $firstname;
 		private $surname;
 		private $autologin;
+		private $pdo;
 
 		// UNCOMMENTED FAKE AUTHENTICATION DATA
-		// public function __construct () {
+			public function __construct () {
 
-		// 	$this->username = "Shari";
-		// 	$this->password = "test";
-		// }
+				$this->tabel = "user";
+				$this->pdo = $this->connectionToDataBase();
+
+			}
+
 		public function GetUserId () {
 
 			return $this->userId;
@@ -29,39 +31,31 @@
 		}
 
 		public function AuthenticateUser ($username, $password) {
-
-			global $database;
-
-			// $result = mysql_query("CALL AuthenticateUser('{$username}', '{$password}')");
-
-			// $database->StoreResult();
-
-			$query = "SELECT * from user
-			WHERE username = '{$username}'
-			AND password = '{$password}'";
 			
-			$result = $database->ExecuteSqlQuery($query);
-
-			// MAYBE MOVE THIS CODE TO A COMMON DATABASE CLASS INHERITED BY THIS CLASS.
-			if (mysql_num_rows($result) === 1) {
+			try{
 				
-				while ($row = mysql_fetch_assoc($result)) {
+				$sql = "SELECT * from $this->tabel
+				WHERE username = ?
+				AND password = ?";
+			
+				$query = $this->pdo->prepare($sql);
 
-					// $userObject = new self;
-					$this->userId = $row['userId'];
-					$this->username = $row['username'];
-					$this->password = $row['password'];
-					$this->firstname = $row['firstname'];
-					$this->surname = $row['surname'];
-				}
+				$params = array($username, $password);
 
-				return true;
+				$query->execute($params);
+
+				$result = $query->fetchAll();
+
+				return $result ? true : false;
+
+			}catch(PDOException $ex){
+
+				die('An unknown erro hase happend');
 			}
-			else {
+		}	
 
-				return false;
-			}
-		}
+	
+
 
 		public function SaveCookieTimestamp ($timestamp, $userId) {
 
@@ -69,9 +63,9 @@
 
 			$result = mysql_query("CALL SaveCookieTimestamp('{$timestamp}', '{$userId}')");
 
-			// $result = $database->ExecuteSqlQuery($query);
-			// mysql_affected_rows($result); die();
-			// return mysql_num_rows($result) ? true : false;
+			 $result = $database->ExecuteSqlQuery($query);
+			 mysql_affected_rows($result); die();
+			 return mysql_num_rows($result) ? true : false;
 		}
 
 		public function GetCookieDateById () {
@@ -99,5 +93,4 @@
 			return ($u === $username && $hp === $data);
 		}
 	}
-
 

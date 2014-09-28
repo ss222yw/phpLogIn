@@ -2,7 +2,6 @@
 
 	class CookieStorage {
 
-		// private static $cookieName = "CookieStorage";
 		public $username;
 		public $password;
 		private static $usernameCookie = "username";

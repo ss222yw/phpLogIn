@@ -1,49 +1,22 @@
 <?php
 
-	class Database {
+	abstract class Database {
 
-		private $connection;
+		protected $connection;
+		protected $tabel;
+	
+	public function connectionToDataBase(){
 
-		function __construct () {
-			
-			$this->connection = mysql_connect(DB_HOST_NAME, DB_USER_NAME, DB_PASSWORD);
-			$selectedDB = mysql_select_db(DB_NAME, $this->connection);
-			// var_dump($selectedDB);
+			if ($this->connection == NULL) {
 
-			if ($this->connection) {
-				
-				// echo 'mysql connected!';
+				$this->connection = new PDO(DB_CONNECTION_STRING, DB_USER_NAME, DB_PASSWORD);
 
-				if (!$selectedDB) {
-					
-					// echo 'Could not select database!';
-				}
-			} else {
+				$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-				// echo 'mysql did not connect!';
+				return $this->connection;
 			}
 		}
-
-		public function ExecuteSqlQuery ($sql) {
-
-			$result = mysql_query($sql, $this->connection);
-
-			if ($result === false) {
-				// TODO: Create an output function.
-				$output = mysql_error();
-				var_dump($output); die();
-				return false;
-
-			} else {
-
-				return $result;
-			}
-		}
-
-		public function StoreResult () {
-
-			mysql_query("mysql_use_result()", $this->connection);
-		}
+		
 	}
 
-	$database = new Database();
+	
