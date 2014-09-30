@@ -4,11 +4,8 @@
 
 		protected $connection;
 		protected $tabel;
-<<<<<<< HEAD
 		
-=======
 	
->>>>>>> origin/master
 	public function connectionToDataBase(){
 
 			if ($this->connection == NULL) {

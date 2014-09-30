@@ -33,10 +33,7 @@
 				
 				return $_COOKIE[self::$usernameCookie];
 			}
-			//else {
-//
-//				throw new \Exception(self::$cookieUsernameErrMsg);
-//			}
+			
 		}
 
 		public function GetCookiePassword () {

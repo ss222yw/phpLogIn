@@ -13,10 +13,7 @@
 		private $loginView;
 		private $memberView;
 		private $regView;
-<<<<<<< HEAD
 		private $user;
-=======
->>>>>>> origin/master
 		private $userModel;
 		private static $hashString = "sha256";
 		private $cookie;
@@ -32,10 +29,6 @@
 
 
 		}	
-
-	//	public function getUsrId(){
-	//		return $this->regView->GetUserId();
-	//	}
 
 		public function getuser(){
 			return $this->regView->GetUserName();
@@ -129,10 +122,7 @@
 					$loginView->RenderLoginForm($result);
 				}
 			}
-			//var_dump($sessionModel->IsLoggedIn());
-			//var_dump($memberView->RememberMe());
 			// USER IS ALREADY LOGGED IN AND RELOADS PAGE or USER LOGGED IN WITH REMEMBER ME AND RELOADS
-			//var_dump($memberView->RememberMe());
 			if ($sessionModel->IsLoggedIn() || $memberView->RememberMe()) {
 
 				$onReload = true;
@@ -145,18 +135,14 @@
 				return false;
 			}
 
-				//var_dump($this->memberView->GetCookieUsername());
 				// Check if somebody manipulated cookies.
 				$userN = $this->cookie->GetCookieUsername();
-				//var_dump($userN);
-				//var_dump($usermodel);
 				// This if statement only checks the or block if user klicked remember me because of the && - operator.
 				if ( $memberView->RememberMe() &&  $this->CookieDateManipulated($usermodel , $userN)) {
 
 					$this->LogoutUser(false);
 					return false;
 				}
-				//var_dump($memberView->RenderMemberArea(false, $onReload));
 				$memberView->RenderMemberArea(false, $onReload);
 
 				return true;
@@ -190,18 +176,12 @@
 
 			// 2. SERVER-AUTHENTICATION: CHECK WITH DATABASE IF USERNAME AND PASSWORD EXIST
 			$userAuthenticated = $this->userModel->AuthenticateUser($username);
-			//$NewUser = $this->userModel->GetNewUser($username);
 			if ($userAuthenticated) {
 				// TODO: Check that this is not done more than once.
-				//var_dump($this->user);
-				//var_dump($this->sessionModel->LoginUser($this->user));
 				$this->sessionModel->LoginUser($this->user);
 				if ($this->loginView->AutoLoginIsChecked()) {
 					// TODO: Change 30 to a constant/variable.
 					$cookieTimestamp = time() + 60;
-					//var_dump($this->user->getUsername());
-					//$usr = $this->user->getUsername();
-					//var_dump($this->sessionModel->GetUsername());
 					$this->memberView->SaveUserCredentials($username, $password, $cookieTimestamp);
 					$this->userModel->SaveCookieTimestamp($cookieTimestamp,$this->sessionModel->GetUsername());
 				}
@@ -241,11 +221,9 @@
 		protected function CookieDateManipulated (UserModel $usermodel , $username) {
 			//echo "string";
 			// TODO: Move this logic to view.
-//			var_dump($username);
 
 			$currentTime = time();
 			$cookieExpTime = ($this->userModel->GetCookieDateById($username));
-			//echo "string";
 			return ($currentTime > $cookieExpTime) ? true : false;
 		}
 

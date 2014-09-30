@@ -23,11 +23,11 @@
 					<html>
 						<head>
 							<meta content="text/html; charset=utf-8" http-equiv="content-type">
-<<<<<<< HEAD
+
 							<title>PHP</title>
-=======
+
 							<title>Sherief Badran PHP</title>
->>>>>>> origin/master
+
 						</head>
 						<body>
 							<h1>PHP Laboration 1</h1>' .

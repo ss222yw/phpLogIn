@@ -6,7 +6,7 @@
 	defined('DS') ? null : define('DS', DIRECTORY_SEPARATOR);
 
 	// Define a project root path.
-	defined('ProjectRootPath') ? null : define('ProjectRootPath', 'C:'.DS.'phpLogIn');
+	defined('ProjectRootPath') ? null : define('ProjectRootPath', 'C:'.DS.'NewphpLogIn'.DS.'phpLogIn');
 
 	// Define helper path.
 	defined('HelperPath') ? null : define('HelperPath', ProjectRootPath.DS.'data');

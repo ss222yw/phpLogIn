@@ -21,9 +21,7 @@
 		}
 
 		public function IsLoggedIn () {
-		//	var_dump(isset($_SESSION[self::$sessionUsername]));
-			// return $this->isLoggedIn;
-		//	$this->isLoggedIn = true;
+
 			return isset($_SESSION[self::$sessionUsername]);
 		}
 
@@ -40,7 +38,6 @@
 		public function LoginUser (User $user) {
 
 			global $remote_ip;
-			// global $b_ip;
 			global $user_agent;
 
 			// session_set_cookie_params(0);
