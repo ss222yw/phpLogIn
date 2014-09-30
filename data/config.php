@@ -1,5 +1,4 @@
 <?php
-	defined('DB_HOST_NAME') ? null : define('DB_HOST_NAME', 'localhost');
-	defined('DB_USER_NAME') ? null : define('DB_USER_NAME', 'root');
+	defined('DB_CONNNECTION_STRING') ? null : define('DB_CONNECTION_STRING', 'mysql:host=localhost;dbname=login');
+	defined('DB_USER_NAME') ? null : define('DB_USER_NAME', 'User');
 	defined('DB_PASSWORD') ? null : define('DB_PASSWORD', 'root');
-	defined('DB_NAME') ? null : define('DB_NAME', '129463-loginmodule');

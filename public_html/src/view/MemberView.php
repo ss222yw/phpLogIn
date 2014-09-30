@@ -30,7 +30,7 @@
 			$username = '';
 
 			if (isset($_SESSION[self::$sessionUserHeadCategory][self::$sessionUsername])) {
-				//var_dump('test');
+				
 				$username = $_SESSION[self::$sessionUserHeadCategory][self::$sessionUsername];
 			}
 			
@@ -53,7 +53,7 @@
 			if ($onReload) {
 
 				$memberHTML = $this->GetMemberStartHTML(self::$cookieLoginSuccessMessage);
-
+			
 				if ($this->sessionModel->isLoggedIn()) {
 
 					$memberHTML = $this->GetMemberStartHTML();

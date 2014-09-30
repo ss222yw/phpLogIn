@@ -10,9 +10,10 @@
 		private static $sessionPassword = 'password';
 		private static $securitySessionName = 'unique';
 		private static $hashString = "sha256";
+		private $userModel;
 
 		function __construct () {
-
+			$this->userModel = new UserModel();
 			if (!isset($_SESSION[self::$sessionUserHeadCategory])) {
 				
 				$_SESSION[self::$sessionUserHeadCategory][self::$sessionUsername] = '';
@@ -20,14 +21,15 @@
 		}
 
 		public function IsLoggedIn () {
-
+		//	var_dump(isset($_SESSION[self::$sessionUsername]));
 			// return $this->isLoggedIn;
-			return isset($_SESSION[self::$sessionUserId]);
+		//	$this->isLoggedIn = true;
+			return isset($_SESSION[self::$sessionUsername]);
 		}
 
 		public function GetUserId () {
 
-			return $this->userId;
+			return $this->username;
 		}
 
 		public function GetUsername () {
@@ -35,22 +37,22 @@
 			return $_SESSION[self::$sessionUserHeadCategory][self::$sessionUsername];
 		}
 
-		public function LoginUser (UserModel $user) {
+		public function LoginUser (User $user) {
 
 			global $remote_ip;
 			// global $b_ip;
 			global $user_agent;
 
 			// session_set_cookie_params(0);
-			$this->userId = $_SESSION[self::$sessionUserId] = $user->GetUserId();
-			$_SESSION[self::$sessionUserHeadCategory][self::$sessionUsername] = $user->GetUsername();
+	    	$this->username = $_SESSION[self::$sessionUsername] = $user->getUsername();
+			$_SESSION[self::$sessionUserHeadCategory][self::$sessionUsername] = $user->getUsername();
 			$_SESSION[self::$securitySessionName] = hash(self::$hashString, $remote_ip . $user_agent);
 			$this->isLoggedIn = true;
 		}
 
 		public function LogoutUser () {
 
-			unset($_SESSION[self::$sessionUserId]);
+			unset($_SESSION[self::$sessionUsername]);
 			$this->isLoggedIn = false;
 		}
 

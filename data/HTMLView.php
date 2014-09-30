@@ -3,7 +3,7 @@
 	class HTMLView {
 
 		function echoHTML ($body) {
-
+			
 			if ($body === null) {
 				
 				throw new \Exception("HTMLView->HTMLView does not allow body to be null");
@@ -23,7 +23,7 @@
 					<html>
 						<head>
 							<meta content="text/html; charset=utf-8" http-equiv="content-type">
-							<title>Sherief Badran</title>
+							<title>PHP</title>
 						</head>
 						<body>
 							<h1>PHP Laboration 1</h1>' .
@@ -50,7 +50,7 @@
 			$month = Array(
 				'Jan'=>'Januari','Feb'=>'Februari','Mar'=>'Mars','Apr'=>'April','May'=>'Maj','Jun'=>'Juni','Jul'=>'Juli',
 				'Aug'=>'Augusti','Sep'=>'September','Oct'=>'Oktober','Nov'=>'November','Dec'=>'December');
-
-				return $month[strftime("%h", strtotime((string)$date))];
+			
+			return @$month[strftime("%h", strtotime((string)$date))];
 		}
 	}

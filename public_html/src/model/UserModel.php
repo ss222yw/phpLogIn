@@ -1,93 +1,181 @@
 <?php
 	require_once(HelperPath.DS.'Database.php');
 
-	class UserModel {
-
-		protected static $tableName = "user";
+	class UserModel extends Database{
 		
-		private $userId;
-		private $username;
-		private $password;
-		private $firstname;
-		private $surname;
-		private $autologin;
+		//private  static $userId = "userId";
+		private static $username = 'username';
+	    private static $password = 'password';
+		private static $autologin = "autologin";
 
 		// UNCOMMENTED FAKE AUTHENTICATION DATA
-		// public function __construct () {
+			public function __construct () {
+				$this->tabel = "user";
+			}
+/*
+		public function AuthenticateUser($username , $password){
 
-		// 	$this->username = "Shari";
-		// 	$this->password = "test";
-		// }
-		public function GetUserId () {
-
-			return $this->userId;
-		}
-
-		public function GetUsername () {
-
-			return $this->username;
-		}
-
-		public function AuthenticateUser ($username, $password) {
-
-			global $database;
-
-			// $result = mysql_query("CALL AuthenticateUser('{$username}', '{$password}')");
-
-			// $database->StoreResult();
-
-			$query = "SELECT * from user
-			WHERE username = '{$username}'
-			AND password = '{$password}'";
-			
-			$result = $database->ExecuteSqlQuery($query);
-
-			// MAYBE MOVE THIS CODE TO A COMMON DATABASE CLASS INHERITED BY THIS CLASS.
-			if (mysql_num_rows($result) === 1) {
+			var_dump($username);
+			var_dump($password);
+			try{
 				
-				while ($row = mysql_fetch_assoc($result)) {
+				$pdo = $this->connectionToDataBase();
 
-					// $userObject = new self;
-					$this->userId = $row['userId'];
-					$this->username = $row['username'];
-					$this->password = $row['password'];
-					$this->firstname = $row['firstname'];
-					$this->surname = $row['surname'];
-				}
+				$sql = "SELECT * from $this->tabel 
+				WHERE username = ?
+				AND password = ?";
 
-				return true;
-			}
-			else {
+				$params = array($username, $password);
+				$query = $pdo->prepare($sql);
+				$query->execute($params);
+				$result = $query->fetch();
 
-				return false;
+				return $result ? true : false;
+
+			}catch(PDOException $ex){
+
+				die('An unknown error hase happened');
 			}
 		}
+*/
 
-		public function SaveCookieTimestamp ($timestamp, $userId) {
+		public function addNewUser(User $user){
+			try{
 
-			global $database;
+				$pdo = $this->connectionToDataBase();
 
-			$result = mysql_query("CALL SaveCookieTimestamp('{$timestamp}', '{$userId}')");
+				$sql = "INSERT INTO $this->tabel    
+				(" . self::$username . ", " . self::$password . ")
+				VALUES(?,?)";
 
-			// $result = $database->ExecuteSqlQuery($query);
-			// mysql_affected_rows($result); die();
-			// return mysql_num_rows($result) ? true : false;
+				$params = array($user->getUsername(), $user->getPasswrod());
+
+				$query = $pdo->prepare($sql);
+
+				$query->execute($params);
+
+			}catch(PDOException $ex){
+
+				die('An unknown error has happened jebla');
+			}
+
 		}
 
-		public function GetCookieDateById () {
-
-			global $database;
-
-			$query = "SELECT autologin 
-			FROM user
-			WHERE userId = 1";
+		public function AuthenticateUser($username) {
 			
-			$result = $database->ExecuteSqlQuery($query);
+			try{
 
-			$resultArr = mysql_fetch_row($result);
-			$timestamp = array_shift($resultArr);
+				$pdo = $this->connectionToDataBase();
+				
+				$sql = "SELECT * from $this->tabel 
+				WHERE "  . self::$username . " =?";
+				
+				$params = array($username);
 
+				$query = $pdo->prepare($sql);
+
+				$query->execute($params);
+
+				$result = $query->fetch();
+
+				return $result ? true : false;
+			
+			}catch(PDOException $ex){
+
+				die('An unknown error has happened');
+			}
+		}	
+
+		public function userEX($username){
+			try {
+
+					$pdo = $this->connectionToDataBase();
+			$sql ="SELECT COUNT(*) AS count 
+			FROM $this->tabel  WHERE username=?";
+			$params = array($username);
+			$query = $pdo->prepare($sql);
+			$query->execute($params);
+
+			while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+  			$count = $row["count"];
+			}
+			if ($count > 0) {
+  			return false;
+			}
+			return true;
+				
+			} catch (Exception $e) {
+
+				
+			die('An unknown error has happened');	
+				
+			}
+		
+
+		}				
+
+		public function SaveCookieTimestamp ($timestamp, $username) {
+		//	var_dump($timestamp);
+		//	var_dump($username);
+			try{
+			//$result = mysql_query("CALL SaveCookieTimestamp('{$timestamp}', '{$userId}')");
+			$newData = new UserModel();			
+			$pdo = $newData->connectionToDataBase();
+
+
+			$sql = "UPDATE $this->tabel
+			SET  autologin  = ?
+			WHERE  username = ?";
+			$params = array($timestamp, $username);
+			//var_dump($sql);
+			$query = $pdo->prepare($sql);
+			//var_dump($query);
+
+			$query->execute($params);
+			//echo "string";
+
+		}
+		catch(PDOException $ex){
+		//	die('An unknown error has happened');
+		}
+			//$result = $query->fetch();
+
+	
+		//	return $result;
+		}
+
+		// get(username) 
+
+		public function GetCookieDateById ($username) {
+		try
+		{
+			$pdo = $this->connectionToDataBase();
+			$sql = "SELECT autologin
+			FROM $this->tabel
+			 WHERE    username =?";
+				
+				$params = array($username);
+
+				$query = $pdo->prepare($sql);
+
+				$query->execute($params);
+
+				$result = $query->fetchAll();
+
+				$timestamp = array_shift($result);	
+			
+			//var_dump($timestamp);
 			return $timestamp;
+
+		}
+		catch(PDOException $ex){
+		//	die('An unknown error has happened');
+		}
+			//	var_dump($result); die();
+			
+		//	$timestamp = array_shift($result);
+		//	var_dump($timestamp);
+		//	return $timestamp;
 		}
 
 		public function UserCredentialManipulated ($username, $data) {
@@ -99,5 +187,4 @@
 			return ($u === $username && $hp === $data);
 		}
 	}
-
 

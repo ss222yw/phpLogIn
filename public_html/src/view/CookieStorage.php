@@ -2,7 +2,6 @@
 
 	class CookieStorage {
 
-		// private static $cookieName = "CookieStorage";
 		public $username;
 		public $password;
 		private static $usernameCookie = "username";
@@ -34,10 +33,10 @@
 				
 				return $_COOKIE[self::$usernameCookie];
 			}
-			else {
-
-				throw new \Exception(self::$cookieUsernameErrMsg);
-			}
+			//else {
+//
+//				throw new \Exception(self::$cookieUsernameErrMsg);
+//			}
 		}
 
 		public function GetCookiePassword () {
@@ -46,7 +45,7 @@
 				
 				return $_COOKIE[self::$passwordCookie];
 			}
-			else {
+			else {	
 
 				throw new \Exception(self::$cookiePasswordErrMsg);
 			}
