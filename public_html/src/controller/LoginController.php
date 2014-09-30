@@ -13,7 +13,10 @@
 		private $loginView;
 		private $memberView;
 		private $regView;
+<<<<<<< HEAD
 		private $user;
+=======
+>>>>>>> origin/master
 		private $userModel;
 		private static $hashString = "sha256";
 		private $cookie;
@@ -86,6 +89,13 @@
 			
 			}	
 
+
+				
+			if($loginView->userPressRegNewUser() == true){
+
+				$regView->RenderRegForm();
+				return true;
+			}	
 			// RENDER START PAGE, Render loginView if user is not already logged in and did not press Login Button
 			if(!$sessionModel->IsLoggedIn() && !$loginView->UserPressLoginButton() && !$memberView->RememberMe()) {
 			
@@ -154,6 +164,14 @@
 		}
 
 		// HELPER FUNCTIONS FOR THIS CONTROLLER
+
+		protected function RegUser() {
+
+			$username = $this->regView->GetUserName();
+			$passwordOne = $this->regView->GetPasswordOne();
+			$passwordTwo = $this->regView->GetPasswordTwo();
+
+		}
 
 		// Authentication logic. 
 		protected function AuthenticateUser () {

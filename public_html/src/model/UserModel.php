@@ -3,6 +3,7 @@
 
 	class UserModel extends Database{
 		
+<<<<<<< HEAD
 		//private  static $userId = "userId";
 		private static $username = 'username';
 	    private static $password = 'password';
@@ -24,6 +25,26 @@
 				$sql = "SELECT * from $this->tabel 
 				WHERE username = ?
 				AND password = ?";
+=======
+		private $userId;
+		private $username ="username";
+	    private $password = "password";
+	    private $usernamee;
+		private $firstname;
+		private $surname;
+		private $autologin;
+		private $pdo;
+
+		// UNCOMMENTED FAKE AUTHENTICATION DATA
+			public function __construct () {
+
+				$this->tabel = "user";
+				$this->pdo = $this->connectionToDataBase();
+
+			}
+
+		public function GetUserId () {
+>>>>>>> origin/master
 
 				$params = array($username, $password);
 				$query = $pdo->prepare($sql);
@@ -50,6 +71,7 @@
 
 				$params = array($user->getUsername(), $user->getPasswrod());
 
+<<<<<<< HEAD
 				$query = $pdo->prepare($sql);
 
 				$query->execute($params);
@@ -105,6 +127,34 @@
 			return true;
 				
 			} catch (Exception $e) {
+=======
+		public function AuthenticateUser ($username, $password) {
+			
+			try{
+				
+				$sql = "SELECT * from $this->tabel
+				WHERE username = ?
+				AND password = ?";
+			
+				$query = $this->pdo->prepare($sql);
+
+				$params = array($username, $password);
+
+				$query->execute($params);
+
+				$result = $query->fetchAll();
+
+				return $result ? true : false;
+
+			}catch(PDOException $ex){
+
+				die('An unknown erro hase happend');
+			}
+		}	
+
+	
+
+>>>>>>> origin/master
 
 				
 			die('An unknown error has happened');	
@@ -134,6 +184,12 @@
 			$query->execute($params);
 			//echo "string";
 
+<<<<<<< HEAD
+=======
+			 $result = $database->ExecuteSqlQuery($query);
+			 mysql_affected_rows($result); die();
+			 return mysql_num_rows($result) ? true : false;
+>>>>>>> origin/master
 		}
 		catch(PDOException $ex){
 		//	die('An unknown error has happened');
