@@ -6,29 +6,32 @@ class RegView{
 
 	private $mainView;
 	private $username = "username";
-<<<<<<< HEAD
 	private $passwordOne = "password";
 	private $passwordTwo = "passwordTwo";
-//	private $userId = "userId";
-=======
-	private $passwordOne = "passwordOne";
-	private $passwordTwo = "passwordTwo";
->>>>>>> origin/master
+	private $safe;
 
 	private static $ErrorUserNameMessage = "Användarnamnet har för få tecken. Minst 3 tecken";
 	private static $ErrorPasswordMessage = "Lösenorden har för få tecken. Minst 6 tecken";
 	private static $ErrorDiffrentPasswordMessage = "Lösenorden matchar inte";
 	private static $ErrorHasTagsUsernameMessage = "Användarnamnet innehåller ogiltiga tecken";
-<<<<<<< HEAD
 	private static $ErrorUserHasToken = "Användarnamnet är upptaget!";
-=======
->>>>>>> origin/master
+	private static $ErrorPasswordAndUserNameMessage = "Användarnamnet har för få tecken. Minst 3 tecken <br> Lösenorden har för få tecken. Minst 6 tecken";
+
 
 	public function __construct(){
 
 		$this->mainView = new HTMLView();
+		$this->safe = new safe();
 		
 	}
+
+	public function getSafePassword(){
+			# code...
+			return $this->safe->create_hash($this->GetPasswordOne());
+		
+	}
+
+
 
 	public function GetRegFormHTML($message = ''){
 
@@ -52,17 +55,10 @@ class RegView{
 					'<legend>Registrera ny användare - Skriv in användarnamn och lösenord</legend>' .
 					$responseMessages .
 					'<label for="'.$this->username.'">Namn : </label>' .
-<<<<<<< HEAD
-					'<input type="text" name="'.$this->username.'" value="'. $_SESSION['LoginValues']['username'] . '" maxlength="30" id="username" /> ' .
+					'<input type="text" name="'.$this->username.'" value="'.strip_tags($this->GetUserName()). '" maxlength="30" id="username" /> ' .
 
 					'<label for="'.$this->passwordOne.'">Lösenord : </label>' .
 					'<input type="password" name="'.$this->passwordOne.'" maxlength="30" id="password" /> ' .
-=======
-					'<input type="text" name="'.$this->username.'" value="" maxlength="30" id="username" /> ' .
-
-					'<label for="'.$this->passwordOne.'">Lösenord : </label>' .
-					'<input type="password" name="'.$this->passwordOne.'" maxlength="30" id="passwordOne" /> ' .
->>>>>>> origin/master
 
 					'<label for="'.$this->passwordTwo.'">Reptera Lösenord : </label>' .
 					'<input type="password" name="'.$this->passwordTwo.'" maxlength="30" id="passwordTwo" /> ' .
@@ -77,27 +73,18 @@ class RegView{
 
 	public function RenderRegForm($errorMessage = '') {
 
-<<<<<<< HEAD
 			$RegHTML = $this->GetRegFormHTML($errorMessage);
-=======
-			$RegHTML = $this->GetRegFormHTML();
->>>>>>> origin/master
 			echo $this->mainView->echoHTML($RegHTML);
 		}
 
 
 	public function GetUserName(){
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 		if (isset($_POST[$this->username])) {
 			# code...
 			return $_POST[$this->username];
 		}
 	}
 
-<<<<<<< HEAD
 //	public function GetUserId(){
 //		return $this->userId;
 //	}
@@ -107,14 +94,6 @@ class RegView{
 			# code...
 			return $_POST[$this->passwordOne];
 		}	
-=======
-	public function GetPasswordOne(){
-
-		if (isset($_POST[$this->passwordOne])) {
-			# code...
-			return $_POST[$this->passwordOne];
-		}
->>>>>>> origin/master
 	}
 
 	public function GetPasswordTwo(){
@@ -141,30 +120,34 @@ class RegView{
 		
 	}
 
-<<<<<<< HEAD
 	public function validateUserIfEX(){
 		return self::$ErrorUserHasToken;
 	}
 
 	public function ValidateRegistration () {
-		
-=======
-	public function ValidateRegistration () {
 
->>>>>>> origin/master
-			if ($this->GetUserName() == null || mb_strlen($this->GetUserName()) < 3) {
+			if (mb_strlen($this->GetUserName()) < 3 && mb_strlen($this->GetPasswordOne()) < 6) {
+				# code...
+				return self::$ErrorPasswordAndUserNameMessage;
+			}
+
+		    if ($this->GetUserName() == null || mb_strlen($this->GetUserName()) < 3) {
 
 				return self::$ErrorUserNameMessage;
 			}
-			else if($this->GetUserName() != strip_tags($this->GetUserName())){
-
-				return self::$ErrorHasTagsUsernameMessage;
-			}
-<<<<<<< HEAD
+			
 			else if ($this->GetPasswordOne() == null || mb_strlen($this->GetPasswordOne()) < 6) {
 		
 				return self::$ErrorPasswordMessage;
 			}
+			else if ($this->GetPasswordTwo() == null || mb_strlen($this->GetPasswordTwo()) < 6) {
+		
+				return self::$ErrorPasswordMessage;
+			}
+			else  if($this->GetUserName() != strip_tags($this->GetUserName())){
+
+				return self::$ErrorHasTagsUsernameMessage;
+			}	
 			else if($this->GetPasswordOne() != $this->GetPasswordTwo()){
 
 				return self::$ErrorDiffrentPasswordMessage;
@@ -173,28 +156,5 @@ class RegView{
 		
 		}
 
-=======
-			else if ($this->GetPasswordOne() == null || $this->GetPasswordOne() < 6) {
 
-				return self::$ErrorPasswordMessage;
-			}
-			else if($this->GetPasswordTwo() == null || $this->GetPasswordTwo() < 6){
-
-				return self::$ErrorPasswordMessage;
-			}
-			else if($this->GetPasswordOne() != $GetPasswordTwo()){
-
-				return self::$ErrorDiffrentPasswordMessage;
-			}
-
-			return true;
-		}
-
-		public function addNewUser(){
-
-
-		}
-
-
->>>>>>> origin/master
 }

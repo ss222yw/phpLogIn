@@ -3,7 +3,6 @@
 
 	class UserModel extends Database{
 		
-<<<<<<< HEAD
 		//private  static $userId = "userId";
 		private static $username = 'username';
 	    private static $password = 'password';
@@ -13,52 +12,30 @@
 			public function __construct () {
 				$this->tabel = "user";
 			}
-/*
-		public function AuthenticateUser($username , $password){
 
-			var_dump($username);
-			var_dump($password);
+		public function AuthenticateUser($username){
+
+		
 			try{
 				
 				$pdo = $this->connectionToDataBase();
 
 				$sql = "SELECT * from $this->tabel 
-				WHERE username = ?
-				AND password = ?";
-=======
-		private $userId;
-		private $username ="username";
-	    private $password = "password";
-	    private $usernamee;
-		private $firstname;
-		private $surname;
-		private $autologin;
-		private $pdo;
+				WHERE  ". self::$username ." = ?";
 
-		// UNCOMMENTED FAKE AUTHENTICATION DATA
-			public function __construct () {
-
-				$this->tabel = "user";
-				$this->pdo = $this->connectionToDataBase();
-
-			}
-
-		public function GetUserId () {
->>>>>>> origin/master
-
-				$params = array($username, $password);
+				$params = array($username);
 				$query = $pdo->prepare($sql);
 				$query->execute($params);
 				$result = $query->fetch();
-
-				return $result ? true : false;
+				return $result;
+					
 
 			}catch(PDOException $ex){
 
-				die('An unknown error hase happened');
+				//die('An unknown error hase happened');
 			}
 		}
-*/
+
 
 		public function addNewUser(User $user){
 			try{
@@ -71,7 +48,6 @@
 
 				$params = array($user->getUsername(), $user->getPasswrod());
 
-<<<<<<< HEAD
 				$query = $pdo->prepare($sql);
 
 				$query->execute($params);
@@ -83,30 +59,6 @@
 
 		}
 
-		public function AuthenticateUser($username) {
-			
-			try{
-
-				$pdo = $this->connectionToDataBase();
-				
-				$sql = "SELECT * from $this->tabel 
-				WHERE "  . self::$username . " =?";
-				
-				$params = array($username);
-
-				$query = $pdo->prepare($sql);
-
-				$query->execute($params);
-
-				$result = $query->fetch();
-
-				return $result ? true : false;
-			
-			}catch(PDOException $ex){
-
-				die('An unknown error has happened');
-			}
-		}	
 
 		public function userEX($username){
 			try {
@@ -127,34 +79,6 @@
 			return true;
 				
 			} catch (Exception $e) {
-=======
-		public function AuthenticateUser ($username, $password) {
-			
-			try{
-				
-				$sql = "SELECT * from $this->tabel
-				WHERE username = ?
-				AND password = ?";
-			
-				$query = $this->pdo->prepare($sql);
-
-				$params = array($username, $password);
-
-				$query->execute($params);
-
-				$result = $query->fetchAll();
-
-				return $result ? true : false;
-
-			}catch(PDOException $ex){
-
-				die('An unknown erro hase happend');
-			}
-		}	
-
-	
-
->>>>>>> origin/master
 
 				
 			die('An unknown error has happened');	
@@ -162,13 +86,11 @@
 			}
 		
 
-		}				
+		}		
+
 
 		public function SaveCookieTimestamp ($timestamp, $username) {
-		//	var_dump($timestamp);
-		//	var_dump($username);
 			try{
-			//$result = mysql_query("CALL SaveCookieTimestamp('{$timestamp}', '{$userId}')");
 			$newData = new UserModel();			
 			$pdo = $newData->connectionToDataBase();
 
@@ -177,30 +99,17 @@
 			SET  autologin  = ?
 			WHERE  username = ?";
 			$params = array($timestamp, $username);
-			//var_dump($sql);
 			$query = $pdo->prepare($sql);
-			//var_dump($query);
-
 			$query->execute($params);
-			//echo "string";
 
-<<<<<<< HEAD
-=======
-			 $result = $database->ExecuteSqlQuery($query);
-			 mysql_affected_rows($result); die();
-			 return mysql_num_rows($result) ? true : false;
->>>>>>> origin/master
 		}
 		catch(PDOException $ex){
-		//	die('An unknown error has happened');
+			die('An unknown error has happened');
 		}
-			//$result = $query->fetch();
 
 	
-		//	return $result;
 		}
 
-		// get(username) 
 
 		public function GetCookieDateById ($username) {
 		try
@@ -220,18 +129,13 @@
 
 				$timestamp = array_shift($result);	
 			
-			//var_dump($timestamp);
 			return $timestamp;
 
 		}
 		catch(PDOException $ex){
-		//	die('An unknown error has happened');
+			die('An unknown error has happened');
 		}
-			//	var_dump($result); die();
 			
-		//	$timestamp = array_shift($result);
-		//	var_dump($timestamp);
-		//	return $timestamp;
 		}
 
 		public function UserCredentialManipulated ($username, $data) {

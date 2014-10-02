@@ -9,12 +9,32 @@
 		private static $emptyPasswordErrorMessage = "Lösenord saknas.";
 		private static $logOutSuccessMessage = "Du är nu utloggad.";
 		private static $corruptCookieLogoutMessage = "Fel information i cookie.";
-
+		private static $newUserSuccessMsg = 'Registrering av ny användare lyckades';
+		private $regView;
+		private $safe;
  
 		function __construct () {
 
 			$this->mainView = new HTMLView();
+			$this->regView = new RegView();
+			$this->safe = new safe();
 		}		
+
+		public function getSafeInputPassword(){
+			return $this->safe->create_hash($this->GetUsername());
+		}
+		public function getNewUserSuccessMsg(){
+			return self::$newUserSuccessMsg;
+		}
+
+		public function getUserNameValue(){
+			if ($this->regView->DidUserPressReg() == true) {
+				# code...
+
+				return $this->regView->GetUserName();
+			}
+			
+		}
 
 		public function GetLoginFormHTML ($message = '') {
 
@@ -38,7 +58,7 @@
 					'<legend>Login - Skriv in användarnamn och lösenord</legend>' .
 					$responseMessages .
 					'<label for="username">Användarnamn : </label>' .
-					'<input type="text" name="username" value="' . $_SESSION['LoginValues']['username'] . '" maxlength="30" id="username" /> ' .
+					'<input type="text" name="username" value="' . $_SESSION['LoginValues']['username'] . $this->getUserNameValue(). '" maxlength="30" id="username" /> ' .
 
 					'<label for="password">Lösenord : </label>' .
 					'<input type="password" name="password" maxlength="30" id="password" /> ' .
