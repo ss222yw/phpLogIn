@@ -2,43 +2,38 @@
 	
 	class HTMLView {
 
-		function echoHTML ($body) {
+		function echoHTML ($body){
 			
 			if ($body === null) {
-				
 				throw new \Exception("HTMLView->HTMLView does not allow body to be null");
 			}
 
-			$time = '[' . strftime("%H:%M:%S") . ']';
-			$year = date("Y");
-			$month = date("M");
-			$day = date("d");
+				$time = '[' . strftime("%H:%M:%S") . ']';
+				$year = date("Y");
+				$month = date("M");
+				$day = date("d");
 
-			$sweWeekday = $this->GetSwedishWeekday(date("d"), date("M"), date("Y"));
-			$sweMonth = $this->GetSwedishMonth(strftime("%Y"), strftime("%m"), strftime("%d"));
-			$date = '<p>' . $sweWeekday . ', den ' . $day . ' ' . $sweMonth . ' år ' . $year . '. ' . 'Klockan är ' . $time . '</p>';			
+				$sweWeekday = $this->GetSwedishWeekday(date("d"), date("M"), date("Y"));
+				$sweMonth = $this->GetSwedishMonth(strftime("%Y"), strftime("%m"), strftime("%d"));
+				$date = '<p>' . $sweWeekday . ', den ' . $day . ' ' . $sweMonth . ' år ' . $year . '. ' . 'Klockan är ' . $time . '</p>';			
 
-			echo 
-				'<!DOCTYPE HTML>
-					<html>
-						<head>
-							<meta content="text/html; charset=utf-8" http-equiv="content-type">
-<<<<<<< HEAD
-							<title>PHP</title>
-=======
-							<title>Sherief Badran PHP</title>
->>>>>>> origin/master
-						</head>
-						<body>
-							<h1>PHP Laboration 1</h1>' .
-							$body .
-							$date .
-						'</body>
-					</html>';
+				echo 
+					'<!DOCTYPE HTML>
+						<html>
+							<head>
+								<meta content="text/html; charset=utf-8" http-equiv="content-type">
+								<title>PHP</title>
+							</head>
+							<body>
+								<h1>PHP Laboration 1</h1>' .
+								$body .
+								$date .
+							'</body>
+						</html>';
 		}
 
 		// Pattern ref: http://scriptcult.com/subcategory_4/article_885-get-weekday-name-based-on-date.html
-		public function GetSwedishWeekday ($day, $month, $yearForDay) {
+		public function GetSwedishWeekday ($day, $month, $yearForDay){
 
 			$weekDay = Array(
 				'Monday'=>'Måndag','Tuesday'=>'Tisdag','Wednesday'=>'Onsdag',
@@ -47,7 +42,7 @@
 			return $weekDay[date("l", strtotime($yearForDay.'-'.$month.'-'.$day))];
 		}
 
-		public function GetSwedishMonth ($year, $month, $day) {
+		public function GetSwedishMonth ($year, $month, $day){
 
 			$date = $year.'-'.$month.'-'.$day;
 
