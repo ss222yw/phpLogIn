@@ -16,6 +16,7 @@
 		private static $superGlobalGetValue = 'login';
 		private static $sessionUserHeadCategory = 'userdata';
 		private static $sessionUsername = 'username';
+		
 
 		function __construct () {
 
@@ -23,6 +24,7 @@
 			$this->cookieStorage = new CookieStorage();
 			$this->sessionModel = new SessionModel();
 		}
+
 
 		public function GetMemberStartHTML ($message = '') {
 

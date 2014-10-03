@@ -9,12 +9,18 @@
 		private static $cookieUsernameErrMsg = 'CookieUsername does not exist!';
 		private static $cookiePasswordErrMsg = 'CookiePassword does not exist!';
 
+		
+
 		public function SaveUserCredentials ($username, $password, $cookieTimestamp) {
 
-			$hashedPassword = hash("sha256", $password);
+			
+			//$hashedPassword = hash("sha256", $password);
+			//var_dump($hashedPassword);
 			setcookie(self::$usernameCookie, $username, $cookieTimestamp, "/");
-			setcookie(self::$passwordCookie, $hashedPassword, $cookieTimestamp, "/");
+			setcookie(self::$passwordCookie, $password, $cookieTimestamp, "/");
 		}
+
+
 
 		public function DeleteUserCredentials () {
 
@@ -33,10 +39,8 @@
 				
 				return $_COOKIE[self::$usernameCookie];
 			}
-			//else {
-//
-//				throw new \Exception(self::$cookieUsernameErrMsg);
-//			}
+		
+
 		}
 
 		public function GetCookiePassword () {
@@ -45,9 +49,6 @@
 				
 				return $_COOKIE[self::$passwordCookie];
 			}
-			else {	
-
-				throw new \Exception(self::$cookiePasswordErrMsg);
-			}
+			
 		}		
 	}
